@@ -17,65 +17,45 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 align-items-lg-center">
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'core:home' %}">
-            {% trans "Home" %}
+            <i class="fa-solid fa-house-chimney"></i> <span>{% trans "Home" %}</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if 'jobs' in request.path and not 'dashboard' in request.path %}active{% endif %}" href="{% url 'jobs:list' %}">
-            {% trans "Find Jobs" %}
+            <i class="fa-solid fa-magnifying-glass"></i> <span>{% trans "Find Jobs" %}</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if 'companies' in request.path %}active{% endif %}" href="{% url 'companies:list' %}">
-            {% trans "Companies" %}
+            <i class="fa-solid fa-building"></i> <span>{% trans "Companies" %}</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if 'categories' in request.path %}active{% endif %}" href="{% url 'jobs:categories' %}">
-            {% trans "Categories" %}
+            <i class="fa-solid fa-shapes"></i> <span>{% trans "Categories" %}</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if 'blog' in request.path %}active{% endif %}" href="{% url 'blog:list' %}">
-            {% trans "Career Blog" %}
+            <i class="fa-solid fa-newspaper"></i> <span>{% trans "Career Blog" %}</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'pricing' %}active{% endif %}" href="{% url 'payments:pricing' %}">
-            {% trans "Pricing" %}
+            <i class="fa-solid fa-tags"></i> <span>{% trans "Pricing" %}</span>
           </a>
         </li>
       </ul>
 
-      <!-- Language Switcher & User Actions -->
+      <!-- User Actions & Language Switcher -->
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <!-- For Employers Link (for Guests) -->
         {% if not user.is_authenticated %}
-          <a href="{% url 'accounts:register_recruiter' %}" class="btn btn-sm btn-link text-decoration-none text-muted fw-semibold d-none d-xl-inline-block hover-primary px-2">
+          <a href="{% url 'accounts:register_recruiter' %}" class="btn btn-sm btn-link text-decoration-none text-muted fw-semibold d-none d-xl-inline-block hover-primary px-2 text-nowrap">
             <i class="fa-solid fa-briefcase me-1 text-accent"></i> {% trans "For Employers" %}
           </a>
           <span class="vr d-none d-xl-inline-block mx-1 text-secondary opacity-25" style="height: 22px;"></span>
         {% endif %}
-
-        <!-- Language Selector Dropdown -->
-        <div class="dropdown me-1">
-          <button class="btn btn-sm btn-light border dropdown-toggle d-flex align-items-center gap-1 py-1.5 px-2.5 rounded-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fa-solid fa-globe text-secondary" style="font-size: 0.85rem;"></i>
-            <span class="small fw-semibold text-dark">
-              {% get_current_language as CURRENT_LANGUAGE %}
-              {% if CURRENT_LANGUAGE == 'hi' %}हिन्दी{% elif CURRENT_LANGUAGE == 'gu' %}ગુજરાતી{% else %}English{% endif %}
-            </span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-1">
-            <form action="{% url 'set_language' %}" method="post" id="langForm">
-              {% csrf_token %}
-              <input name="next" type="hidden" value="{{ request.get_full_path }}">
-              <li><button type="submit" name="language" value="en" class="dropdown-item {% if CURRENT_LANGUAGE == 'en' %}active{% endif %}">English</button></li>
-              <li><button type="submit" name="language" value="hi" class="dropdown-item {% if CURRENT_LANGUAGE == 'hi' %}active{% endif %}">हिन्दी (Hindi)</button></li>
-              <li><button type="submit" name="language" value="gu" class="dropdown-item {% if CURRENT_LANGUAGE == 'gu' %}active{% endif %}">ગુજરાતી (Gujarati)</button></li>
-            </form>
-          </ul>
-        </div>
 
         {% if user.is_authenticated %}
           <!-- Unread Messages -->
@@ -158,19 +138,20 @@
           </div>
 
           {% if user.is_recruiter %}
-            <a href="{% url 'jobs:create' %}" class="btn btn-career btn-sm ms-2">
+            <a href="{% url 'jobs:create' %}" class="btn btn-career btn-sm ms-1">
               <i class="fa-solid fa-plus"></i> {% trans "Post Job" %}
             </a>
           {% endif %}
 
         {% else %}
-          <!-- Guest Navigation Actions -->
-          <a href="{% url 'accounts:login' %}" class="btn btn-career-outline btn-sm">
-            <i class="fa-regular fa-user"></i> {% trans "Sign In" %}
+          <!-- Guest Navigation Actions: Sign In, then Register right next to it -->
+          <a href="{% url 'accounts:login' %}" class="btn btn-career-outline btn-sm text-nowrap">
+            <i class="fa-regular fa-user me-1"></i> {% trans "Sign In" %}
           </a>
 
+          <!-- Register Button (right beside Sign In) -->
           <div class="dropdown">
-            <button class="btn btn-career btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-career btn-sm dropdown-toggle text-nowrap" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               {% trans "Register" %}
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-2">
@@ -196,6 +177,26 @@
             </ul>
           </div>
         {% endif %}
+
+        <!-- Language Selector Dropdown (Placed at the end, where Register was) -->
+        <div class="dropdown ms-1">
+          <button class="btn btn-sm btn-light border dropdown-toggle d-flex align-items-center gap-1 py-1.5 px-2.5 rounded-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-globe text-secondary" style="font-size: 0.85rem;"></i>
+            <span class="small fw-semibold text-dark">
+              {% get_current_language as CURRENT_LANGUAGE %}
+              {% if CURRENT_LANGUAGE == 'hi' %}हिन्दी{% elif CURRENT_LANGUAGE == 'gu' %}ગુજરાતી{% else %}English{% endif %}
+            </span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-1">
+            <form action="{% url 'set_language' %}" method="post" id="langForm">
+              {% csrf_token %}
+              <input name="next" type="hidden" value="{{ request.get_full_path }}">
+              <li><button type="submit" name="language" value="en" class="dropdown-item {% if CURRENT_LANGUAGE == 'en' %}active{% endif %}">English</button></li>
+              <li><button type="submit" name="language" value="hi" class="dropdown-item {% if CURRENT_LANGUAGE == 'hi' %}active{% endif %}">हिन्दी (Hindi)</button></li>
+              <li><button type="submit" name="language" value="gu" class="dropdown-item {% if CURRENT_LANGUAGE == 'gu' %}active{% endif %}">ગુજરાતી (Gujarati)</button></li>
+            </form>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
