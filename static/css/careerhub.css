@@ -255,13 +255,13 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-block;
   width: 100%;
   max-width: 450px;
-  padding-bottom: 2rem;
+  padding-bottom: 3.5rem;
 }
 
 .hero-verified-badge {
   position: absolute;
-  bottom: 0px;
-  left: 20px;
+  bottom: -6px;
+  left: 24px;
   z-index: 10;
   background: linear-gradient(135deg, #FFFFFF 0%, #F4FBF7 100%) !important;
   border: 1.5px solid #86EFAC !important;
@@ -354,11 +354,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 575.98px) {
+  .hero-visual-wrapper {
+    padding-bottom: 3.5rem;
+  }
   .hero-verified-badge {
     left: 50% !important;
     transform: translateX(-50%);
     width: max-content;
-    bottom: -10px;
+    bottom: -8px;
     padding: 0.65rem 0.95rem;
   }
   .hero-verified-badge:hover {
