@@ -1,19 +1,71 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 50" width="240" height="50">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 54" width="280" height="54">
   <defs>
-    <linearGradient id="chGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#4A2E1F" />
-      <stop offset="100%" stop-color="#B87333" />
+    <!-- Background Badge Gradient -->
+    <linearGradient id="yhEmblemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#361F13" />
+      <stop offset="50%" stop-color="#4A2E1F" />
+      <stop offset="100%" stop-color="#6A3B22" />
     </linearGradient>
+
+    <!-- Metallic Gold/Bronze Gradient for Y and Highlights -->
+    <linearGradient id="bronzeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5C58E" />
+      <stop offset="35%" stop-color="#DDA15E" />
+      <stop offset="70%" stop-color="#BC6C25" />
+      <stop offset="100%" stop-color="#8A4814" />
+    </linearGradient>
+
+    <!-- Crisp White with Warm Tint for H -->
+    <linearGradient id="whitePillarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F8EFE9" />
+    </linearGradient>
+
+    <!-- Subtle Drop Shadow -->
+    <filter id="emblemShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#22120A" flood-opacity="0.3"/>
+    </filter>
   </defs>
-  <!-- Emblem Icon -->
-  <g transform="translate(6, 5)">
-    <rect x="0" y="0" width="40" height="40" rx="10" fill="url(#chGrad)" />
-    <!-- Stylized C with Growth Arrow -->
-    <path d="M26 12 C18 12 13 16 13 20 C13 24 18 28 26 28" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
-    <path d="M20 20 L27 13 L27 18" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="28" cy="12" r="2.5" fill="#FFE8D6" />
+
+  <!-- YH Bespoke Monogram Emblem -->
+  <g transform="translate(6, 5)" filter="url(#emblemShadow)">
+    <!-- Base Squircle with Metallic Border -->
+    <rect x="0" y="0" width="44" height="44" rx="12" fill="url(#yhEmblemGrad)" />
+    <rect x="1" y="1" width="42" height="42" rx="11" fill="none" stroke="url(#bronzeGrad)" stroke-width="1.5" stroke-opacity="0.75" />
+
+    <!-- 'H' Structural Frame (Two Solid Pillars + Connecting Crossbar) -->
+    <!-- Left Pillar of H -->
+    <rect x="10" y="10" width="6" height="24" rx="2.5" fill="url(#whitePillarGrad)" />
+    <!-- Right Pillar of H -->
+    <rect x="28" y="10" width="6" height="24" rx="2.5" fill="url(#whitePillarGrad)" />
+    <!-- H Horizontal Bridge -->
+    <rect x="14" y="20.5" width="16" height="4" rx="1.5" fill="url(#whitePillarGrad)" opacity="0.9" />
+
+    <!-- 'Y' Dynamic Overlay (Dual Diagonal Wings meeting at Center with Upward Elevation) -->
+    <!-- Left Branch of Y -->
+    <path d="M12 11 L16 11 L22 21.5 L19 23 Z" fill="url(#bronzeGrad)" />
+    <!-- Right Branch of Y -->
+    <path d="M32 11 L28 11 L22 21.5 L25 23 Z" fill="url(#bronzeGrad)" />
+    <!-- Center Vertical Stem of Y (Descending from nexus) -->
+    <rect x="20" y="21" width="4" height="13" rx="2" fill="url(#bronzeGrad)" />
+
+    <!-- Upward Career Growth Diamond at Apex -->
+    <polygon points="22,9 24.5,13 22,12 19.5,13" fill="#FFEBD6" />
+    <circle cx="22" cy="7" r="1.5" fill="#F5C58E" />
   </g>
-  <!-- Brand Text -->
-  <text x="56" y="27" font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="21" font-weight="800" fill="#361F13" letter-spacing="-0.5px">CAREER<tspan fill="#B87333">HUB</tspan></text>
-  <text x="57" y="39" font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="8.5" font-weight="600" fill="#6F6862" letter-spacing="1.2px">CONNECT • GROW • SUCCEED</text>
+
+  <!-- Typography: YH CAREERHUB -->
+  <g transform="translate(60, 11)">
+    <!-- Main Brandmark -->
+    <text x="0" y="20" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="900" letter-spacing="-0.3px">
+      <tspan fill="url(#bronzeGrad)" font-weight="900">YH </tspan>
+      <tspan fill="#361F13">CAREER</tspan>
+      <tspan fill="#B87333">HUB</tspan>
+    </text>
+
+    <!-- Tagline: INDIA'S PREMIER CAREER PLATFORM -->
+    <text x="1" y="32" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8" font-weight="700" fill="#7A6F68" letter-spacing="1.5px">
+      CONNECT • GROW • SUCCEED
+    </text>
+  </g>
 </svg>
