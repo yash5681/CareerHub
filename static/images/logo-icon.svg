@@ -1,53 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <!-- Background Badge Gradient -->
-    <linearGradient id="yhIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#361F13" />
-      <stop offset="50%" stop-color="#4A2E1F" />
-      <stop offset="100%" stop-color="#6A3B22" />
+    <!-- Background Gradient: Deep Mocha to Velvet Espresso -->
+    <linearGradient id="iconCrestBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#24130A" />
+      <stop offset="50%" stop-color="#3A1F13" />
+      <stop offset="100%" stop-color="#542E1B" />
     </linearGradient>
 
-    <!-- Metallic Bronze Gradient -->
-    <linearGradient id="yhIconBronze" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F5C58E" />
-      <stop offset="35%" stop-color="#DDA15E" />
-      <stop offset="70%" stop-color="#BC6C25" />
-      <stop offset="100%" stop-color="#8A4814" />
+    <!-- Radiant Bronze Gold Gradient -->
+    <linearGradient id="iconBronzeGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCE1BE" />
+      <stop offset="30%" stop-color="#E2A662" />
+      <stop offset="70%" stop-color="#B86D2C" />
+      <stop offset="100%" stop-color="#7C3B0E" />
     </linearGradient>
 
-    <!-- Crisp White Gradient -->
-    <linearGradient id="yhIconWhite" x1="0%" y1="0%" x2="0%" y2="100%">
+    <!-- Warm White Gradient -->
+    <linearGradient id="iconPillarWhite" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="100%" stop-color="#F6EDE6" />
+      <stop offset="100%" stop-color="#F7ECE3" />
     </linearGradient>
 
     <!-- Drop Shadow -->
-    <filter id="yhShadow" x="-15%" y="-15%" width="130%" height="130%">
-      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#1E0E06" flood-opacity="0.35"/>
+    <filter id="iconShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#1A0D07" flood-opacity="0.4"/>
     </filter>
   </defs>
 
-  <!-- Base Icon Squircle -->
-  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#yhIconGrad)" filter="url(#yhShadow)" />
-  <rect x="3.5" y="3.5" width="57" height="57" rx="14.5" fill="none" stroke="url(#yhIconBronze)" stroke-width="1.8" stroke-opacity="0.8" />
+  <!-- Base Squircle -->
+  <rect x="2" y="2" width="60" height="60" rx="18" fill="url(#iconCrestBg)" filter="url(#iconShadow)" />
+  <rect x="3.5" y="3.5" width="57" height="57" rx="16.5" fill="none" stroke="url(#iconBronzeGold)" stroke-width="1.5" stroke-opacity="0.65" />
 
-  <!-- 'H' Structural Frame -->
-  <!-- Left Pillar of H -->
-  <rect x="14" y="14" width="8" height="36" rx="3.5" fill="url(#yhIconWhite)" />
-  <!-- Right Pillar of H -->
-  <rect x="42" y="14" width="8" height="36" rx="3.5" fill="url(#yhIconWhite)" />
-  <!-- Horizontal Bridge of H -->
-  <rect x="20" y="30" width="24" height="6" rx="2" fill="url(#yhIconWhite)" opacity="0.95" />
+  <!-- Left Pillar of 'H' -->
+  <rect x="13.5" y="15" width="7.5" height="34" rx="3.75" fill="url(#iconPillarWhite)" />
 
-  <!-- 'Y' Dynamic Geometric Overlay -->
-  <!-- Left Diagonal Arm of Y -->
-  <path d="M17 15 L23 15 L32 31 L27.5 33.5 Z" fill="url(#yhIconBronze)" />
-  <!-- Right Diagonal Arm of Y -->
-  <path d="M47 15 L41 15 L32 31 L36.5 33.5 Z" fill="url(#yhIconBronze)" />
-  <!-- Center Vertical Stem of Y -->
-  <rect x="29" y="30" width="6" height="20" rx="3" fill="url(#yhIconBronze)" />
+  <!-- Right Pillar of 'H' -->
+  <rect x="43" y="15" width="7.5" height="34" rx="3.75" fill="url(#iconPillarWhite)" />
 
-  <!-- Upward Career Apex Diamond -->
-  <polygon points="32,13 36,19 32,17.5 28,19" fill="#FFF2E2" />
-  <circle cx="32" cy="9.5" r="2" fill="#F5C58E" />
+  <!-- Dynamic 'Y' Monogram: Interweaves through 'H' and ascends -->
+  <path d="M29 49 L35 49 L35 34 L45.5 20.5 L40.5 16.5 L32 27.5 L23.5 16.5 L18.5 20.5 L29 34 Z" fill="url(#iconBronzeGold)" />
+
+  <!-- Opportunity Star at the Apex -->
+  <polygon points="32,11 35.5,17 32,15.5 28.5,17" fill="#FFF7ED" />
+  <circle cx="32" cy="7.5" r="2" fill="#FCE1BE" />
 </svg>

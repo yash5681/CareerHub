@@ -1,27 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <linearGradient id="yhFavBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#361F13" />
-      <stop offset="100%" stop-color="#5E331E" />
+    <linearGradient id="favBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#24130A" />
+      <stop offset="100%" stop-color="#4A2E1F" />
     </linearGradient>
-    <linearGradient id="yhFavBronze" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F5C58E" />
-      <stop offset="100%" stop-color="#BC6C25" />
+    <linearGradient id="favBronze" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCE1BE" />
+      <stop offset="50%" stop-color="#D0883E" />
+      <stop offset="100%" stop-color="#8A4814" />
     </linearGradient>
   </defs>
 
-  <rect x="0" y="0" width="64" height="64" rx="16" fill="url(#yhFavBg)" />
-  <rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="url(#yhFavBronze)" stroke-width="2" stroke-opacity="0.85" />
+  <rect x="0" y="0" width="64" height="64" rx="16" fill="url(#favBg)" />
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="url(#favBronze)" stroke-width="1.8" stroke-opacity="0.75" />
 
-  <!-- H Pillars in White -->
-  <rect x="14" y="14" width="8" height="36" rx="3.5" fill="#FFFFFF" />
-  <rect x="42" y="14" width="8" height="36" rx="3.5" fill="#FFFFFF" />
-  <rect x="20" y="30" width="24" height="6" rx="2" fill="#FFFFFF" />
+  <!-- Left Pillar of H -->
+  <rect x="13.5" y="15" width="7.5" height="34" rx="3.75" fill="#FFFFFF" />
 
-  <!-- Y Wings & Stem in Bronze -->
-  <path d="M17 15 L23 15 L32 31 L27.5 33.5 Z" fill="url(#yhFavBronze)" />
-  <path d="M47 15 L41 15 L32 31 L36.5 33.5 Z" fill="url(#yhFavBronze)" />
-  <rect x="29" y="30" width="6" height="20" rx="3" fill="url(#yhFavBronze)" />
+  <!-- Right Pillar of H -->
+  <rect x="43" y="15" width="7.5" height="34" rx="3.75" fill="#FFFFFF" />
 
-  <polygon points="32,13 35.5,18.5 32,17 28.5,18.5" fill="#FFF2E2" />
+  <!-- Dynamic Y in Bronze -->
+  <path d="M29 49 L35 49 L35 34 L45.5 20.5 L40.5 16.5 L32 27.5 L23.5 16.5 L18.5 20.5 L29 34 Z" fill="url(#favBronze)" />
+
+  <polygon points="32,11 35.5,17 32,15.5 28.5,17" fill="#FFF7ED" />
 </svg>
