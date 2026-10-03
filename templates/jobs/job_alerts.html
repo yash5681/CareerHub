@@ -1,0 +1,73 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Job Alerts" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="row g-4">
+  <!-- Left: Create Alert Form -->
+  <div class="col-lg-5">
+    <div class="card-career p-4">
+      <h5 class="fw-bold mb-3 text-dark"><i class="fa-regular fa-bell me-2 text-primary"></i> {% trans "Create a New Job Alert" %}</h5>
+      <p class="text-muted small mb-4">{% trans "Receive curated notifications when matching positions are published." %}</p>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">{% trans "Alert Name" %} *</label>
+          {{ form.title }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{% trans "Keywords / Technologies" %}</label>
+          {{ form.keywords }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{% trans "Category" %}</label>
+          {{ form.category }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{% trans "Location / City" %}</label>
+          {{ form.location }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{% trans "Min Salary (₹ LPA)" %}</label>
+          {{ form.min_salary }}
+        </div>
+        <button type="submit" class="btn btn-career w-100">
+          <i class="fa-solid fa-bell me-1"></i> {% trans "Save Job Alert" %}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Right: Existing Alerts -->
+  <div class="col-lg-7">
+    <div class="card-career p-4">
+      <h5 class="fw-bold mb-3 text-dark">{% trans "Your Active Job Alerts" %}</h5>
+      <div class="d-flex flex-column gap-3">
+        {% for alert in alerts %}
+          <div class="border rounded-3 p-3 position-relative bg-light">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h6 class="fw-bold mb-1 text-dark">{{ alert.title }}</h6>
+                <div class="small text-muted d-flex flex-wrap gap-2 mb-2">
+                  {% if alert.keywords %}<span><i class="fa-solid fa-tag me-1"></i>{{ alert.keywords }}</span>{% endif %}
+                  {% if alert.location %}<span><i class="fa-solid fa-location-dot me-1"></i>{{ alert.location }}</span>{% endif %}
+                  {% if alert.category %}<span><i class="fa-solid fa-shapes me-1"></i>{{ alert.category.name }}</span>{% endif %}
+                  {% if alert.min_salary %}<span><i class="fa-solid fa-indian-rupee-sign me-1"></i>{{ alert.min_salary }}+ LPA</span>{% endif %}
+                </div>
+                <small class="text-muted">{% trans "Created on" %} {{ alert.created_at|date:"M d, Y" }}</small>
+              </div>
+              <a href="{% url 'jobs:delete_alert' pk=alert.pk %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove alert?');">
+                <i class="fa-regular fa-trash-can"></i>
+              </a>
+            </div>
+          </div>
+        {% empty %}
+          <p class="text-muted small mb-0 py-4 text-center">{% trans "No job alerts created yet. Set up an alert on the left to get notified." %}</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

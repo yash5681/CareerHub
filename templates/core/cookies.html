@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Cookie Policy" %} | CareerHub{% endblock %}
+
+{% block content %}
+<div class="py-5 bg-white">
+  <div class="container py-3">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <h1 class="fw-bold mb-4">{% trans "Cookie Policy" %}</h1>
+        <p class="text-muted">
+          {% trans "CareerHub uses essential session cookies to maintain your login status, language preference (English, Hindi, Gujarati), and CSRF security tokens. We do not use intrusive tracking cookies." %}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

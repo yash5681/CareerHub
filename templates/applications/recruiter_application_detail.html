@@ -1,0 +1,171 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Candidate Review" %} | {{ application.applicant.get_full_name }}{% endblock %}
+
+{% block dashboard_content %}
+<div class="row g-4">
+  <!-- Candidate Header Bar -->
+  <div class="col-12">
+    <div class="card-career p-4">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div class="d-flex align-items-center gap-4">
+          {% if application.applicant.avatar %}
+            <img src="{{ application.applicant.avatar.url }}" alt="" width="72" height="72" class="rounded-circle object-fit-cover border">
+          {% else %}
+            <div class="brand-emblem" style="width: 72px; height: 72px; font-size: 2rem;">
+              {{ application.applicant.first_name|default:application.applicant.username|slice:":1"|upper }}
+            </div>
+          {% endif %}
+          <div>
+            <h4 class="fw-bold mb-1 text-dark">{{ application.applicant.get_full_name }}</h4>
+            <p class="text-muted mb-1">{{ profile.headline|default:"Candidate" }}</p>
+            <div class="d-flex flex-wrap gap-3 small text-muted">
+              <span><i class="fa-solid fa-location-dot me-1"></i>{{ profile.city }}, {{ profile.state }}</span>
+              <span><i class="fa-solid fa-envelope me-1"></i>{{ application.applicant.email }}</span>
+              {% if application.applicant.phone %}<span><i class="fa-solid fa-phone me-1"></i>{{ application.applicant.phone }}</span>{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <a href="{% url 'interviews:schedule' application_id=application.pk %}" class="btn btn-career">
+            <i class="fa-regular fa-calendar-plus me-1"></i> {% trans "Schedule Interview" %}
+          </a>
+          <a href="{% url 'messaging:start' recipient_id=application.applicant.id %}?job_id={{ application.job.id }}" class="btn btn-career-outline">
+            <i class="fa-regular fa-comment-dots me-1"></i> {% trans "Chat with Candidate" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Left Column: Application Cover Letter, Profile Details, Resume -->
+  <div class="col-lg-8">
+    <!-- Applied Role Details -->
+    <div class="card-career p-4 mb-4">
+      <h6 class="fw-bold text-dark mb-2">{% trans "Applied Role" %}</h6>
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+          <h5 class="fw-bold text-primary mb-0">{{ application.job.title }}</h5>
+          <small class="text-muted">Applied {{ application.applied_at|naturaltime }}</small>
+        </div>
+        <span class="badge {{ application.badge_color_class }} fs-6 py-2 px-3">
+          {{ application.get_status_display }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Candidate Resume Attachment -->
+    <div class="card-career p-4 mb-4">
+      <h6 class="fw-bold text-dark mb-3"><i class="fa-regular fa-file-pdf me-2 text-danger"></i> {% trans "Submitted Resume" %}</h6>
+      {% if application.resume %}
+        <div class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-light border">
+          <div class="d-flex align-items-center gap-3">
+            <i class="fa-solid fa-file-lines fs-2 text-primary"></i>
+            <div>
+              <strong class="d-block text-dark">{{ application.resume.title }}</strong>
+              <small class="text-muted">{{ application.resume.get_resume_type_display }} &bull; Updated {{ application.resume.updated_at|date:"M d, Y" }}</small>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="{% url 'resumes:preview' pk=application.resume.pk %}" target="_blank" class="btn btn-sm btn-outline-secondary">
+              <i class="fa-solid fa-eye me-1"></i> {% trans "Preview ATS View" %}
+            </a>
+            {% if application.resume.file %}
+              <a href="{{ application.resume.file.url }}" target="_blank" class="btn btn-sm btn-career" download>
+                <i class="fa-solid fa-download me-1"></i> {% trans "Download File" %}
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {% else %}
+        <p class="text-muted small mb-0">{% trans "No resume file attached with this application." %}</p>
+      {% endif %}
+    </div>
+
+    <!-- Candidate Pitch / Cover Letter -->
+    {% if application.cover_letter %}
+    <div class="card-career p-4 mb-4">
+      <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-quote-left me-2 text-primary"></i> {% trans "Candidate Cover Note" %}</h6>
+      <p class="text-muted mb-0 lh-lg">{{ application.cover_letter|linebreaks }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Status History Audit Trail -->
+    <div class="card-career p-4">
+      <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i> {% trans "Application Audit Trail" %}</h6>
+      <div class="timeline">
+        {% for h in history %}
+          <div class="border-bottom pb-2 mb-2 small">
+            <div class="d-flex justify-content-between">
+              <strong>{{ h.previous_status }} &rarr; <span class="text-primary">{{ h.new_status }}</span></strong>
+              <span class="text-muted">{{ h.created_at|naturaltime }}</span>
+            </div>
+            <p class="text-muted mb-0">{{ h.comment|default:"Status modified" }} {% if h.changed_by %}(by {{ h.changed_by.get_full_name }}){% endif %}</p>
+          </div>
+        {% empty %}
+          <small class="text-muted">{% trans "No status transitions logged yet." %}</small>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Status Transition & Internal Notes -->
+  <div class="col-lg-4">
+    <div class="card-career p-4 mb-4">
+      <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-sliders me-2 text-primary"></i> {% trans "Update Application Stage" %}</h6>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">{% trans "Pipeline Stage" %} *</label>
+          {{ form.status }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{% trans "Transition Note (Optional)" %}</label>
+          {{ form.comment }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{% trans "Private Hiring Notes" %}</label>
+          {{ form.recruiter_notes }}
+          <small class="text-muted d-block mt-1">{% trans "Visible only to your internal hiring team." %}</small>
+        </div>
+        <button type="submit" class="btn btn-career w-100">
+          <i class="fa-solid fa-floppy-disk me-1"></i> {% trans "Update Candidate Status" %}
+        </button>
+      </form>
+    </div>
+
+    <!-- Candidate Overview Box -->
+    <div class="card-career p-4">
+      <h6 class="fw-bold text-dark mb-3">{% trans "Profile Snapshot" %}</h6>
+      <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+        <li class="d-flex justify-content-between">
+          <span class="text-muted">Total Exp:</span>
+          <strong>{{ profile.total_experience_years|default:"0" }} yrs</strong>
+        </li>
+        <li class="d-flex justify-content-between">
+          <span class="text-muted">Notice Period:</span>
+          <strong>{{ profile.notice_period_days }} Days</strong>
+        </li>
+        <li class="d-flex justify-content-between">
+          <span class="text-muted">Expected CTC:</span>
+          <strong>₹{{ profile.expected_salary|default:"Negotiable" }} LPA</strong>
+        </li>
+        <li class="d-flex justify-content-between">
+          <span class="text-muted">Work Preference:</span>
+          <strong>{{ profile.get_work_preference_display }}</strong>
+        </li>
+      </ul>
+      <div class="mt-3 pt-3 border-top">
+        <small class="text-muted d-block mb-1">Key Skills:</small>
+        <div class="d-flex flex-wrap gap-1">
+          {% for s in profile.get_skills_list %}
+            <span class="badge badge-ch-accent">{{ s }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

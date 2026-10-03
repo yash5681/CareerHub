@@ -1,0 +1,43 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Applications Monitor" %} | Admin Console{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+  <h3 class="fw-bold mb-1 text-dark">{% trans "System Application Stream" %}</h3>
+  <p class="text-muted small mb-0">{% trans "Real-time feed of applications across all companies and candidates." %}</p>
+</div>
+
+<div class="card-career p-0 overflow-hidden shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0 small">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-4">Candidate</th>
+          <th>Job Posting</th>
+          <th>Company</th>
+          <th>Status</th>
+          <th class="pe-4 text-end">Applied At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for app in applications %}
+          <tr>
+            <td class="ps-4">
+              <strong>{{ app.applicant.get_full_name }}</strong>
+              <small class="text-muted d-block">{{ app.applicant.email }}</small>
+            </td>
+            <td>{{ app.job.title }}</td>
+            <td>{{ app.job.company.name }}</td>
+            <td>
+              <span class="badge {{ app.badge_color_class }}">{{ app.get_status_display }}</span>
+            </td>
+            <td class="pe-4 text-end text-muted">{{ app.applied_at|naturaltime }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

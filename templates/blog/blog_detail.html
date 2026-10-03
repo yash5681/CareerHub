@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{{ post.title }} | CareerHub Blog{% endblock %}
+
+{% block content %}
+<div class="py-5" style="background-color: var(--ch-bg);">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <article class="card-career p-4 p-md-5">
+          <span class="badge badge-ch-primary mb-2">{{ post.category.name }}</span>
+          <h1 class="fw-bold mb-3 text-dark">{{ post.title }}</h1>
+          
+          <div class="d-flex align-items-center gap-3 small text-muted pb-3 mb-4 border-bottom">
+            <span>By <strong>{{ post.author.get_full_name }}</strong></span>
+            <span>&bull;</span>
+            <span>{{ post.created_at|date:"F d, Y" }}</span>
+            <span>&bull;</span>
+            <span><i class="fa-solid fa-eye me-1"></i>{{ post.views_count }} {% trans "views" %}</span>
+          </div>
+
+          <div class="lead fs-6 text-dark fw-semibold mb-4 p-3 bg-light rounded-3 border-start border-4 border-primary">
+            {{ post.excerpt }}
+          </div>
+
+          <div class="article-content text-muted lh-lg fs-6">
+            {{ post.content|linebreaks }}
+          </div>
+
+          <div class="mt-5 pt-4 border-top d-flex justify-content-between align-items-center">
+            <a href="{% url 'blog:list' %}" class="btn btn-outline-secondary btn-sm">
+              &larr; {% trans "Back to Blog" %}
+            </a>
+            <div class="d-flex gap-2">
+              <span class="small text-muted me-2">{% trans "Share:" %}</span>
+              <a href="#" class="btn btn-sm btn-light rounded-circle"><i class="fa-brands fa-linkedin-in"></i></a>
+              <a href="#" class="btn btn-sm btn-light rounded-circle"><i class="fa-brands fa-x-twitter"></i></a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Add Education" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card-career p-4 p-md-5">
+      <h4 class="fw-bold mb-3 text-dark">{% trans "Add Education / Academic Record" %}</h4>
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">{% trans "Degree / Certification" %} *</label>
+            {{ form.degree }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "College / University" %} *</label>
+            {{ form.institution }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Field of Study" %}</label>
+            {{ form.field_of_study }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Starting Year" %} *</label>
+            {{ form.start_year }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Completion Year" %}</label>
+            {{ form.end_year }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Grade / Percentage / CGPA" %}</label>
+            {{ form.grade }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Activities / Highlights" %}</label>
+            {{ form.description }}
+          </div>
+          <div class="col-12 d-flex justify-content-end gap-2 pt-3 border-top">
+            <a href="{% url 'accounts:seeker_profile' %}" class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-career">{% trans "Save Education" %}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

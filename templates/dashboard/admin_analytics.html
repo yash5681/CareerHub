@@ -1,0 +1,43 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Analytics & Insights" %} | CareerHub Admin{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+  <h3 class="fw-bold mb-1 text-dark">{% trans "Platform Analytics & Distribution" %}</h3>
+  <p class="text-muted small mb-0">{% trans "Metrics on job postings, candidate applications, and category popularity." %}</p>
+</div>
+
+<div class="row g-4">
+  <!-- Jobs by Category -->
+  <div class="col-lg-6">
+    <div class="card-career p-4">
+      <h5 class="fw-bold mb-3 text-dark">{% trans "Top Job Categories by Volume" %}</h5>
+      <ul class="list-group list-group-flush">
+        {% for cat in category_breakdown %}
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span><i class="{{ cat.icon }} me-2 text-primary"></i> {{ cat.name }}</span>
+            <span class="badge badge-ch-primary">{{ cat.job_count }} jobs</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Applications by Status Funnel -->
+  <div class="col-lg-6">
+    <div class="card-career p-4">
+      <h5 class="fw-bold mb-3 text-dark">{% trans "Application Pipeline Status Distribution" %}</h5>
+      <ul class="list-group list-group-flush">
+        {% for st in status_breakdown %}
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span class="text-capitalize">{{ st.status|cut:"_" }}</span>
+            <span class="badge bg-secondary-subtle text-secondary">{{ st.count }} applications</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

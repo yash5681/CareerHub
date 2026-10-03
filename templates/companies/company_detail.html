@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{{ company.name }} — Careers & Open Positions | CareerHub{% endblock %}
+
+{% block content %}
+<div class="py-4" style="background-color: var(--ch-bg);">
+  <div class="container">
+    <!-- Company Profile Header Banner -->
+    <div class="card-career overflow-hidden mb-4 border-top border-4 border-primary">
+      <div class="p-4 p-md-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
+          <div class="d-flex align-items-center gap-4">
+            <div class="company-logo-box" style="width: 84px; height: 84px; font-size: 2.2rem;">
+              {% if company.logo %}
+                <img src="{{ company.logo.url }}" alt="{{ company.name }}">
+              {% else %}
+                <i class="fa-solid fa-building"></i>
+              {% endif %}
+            </div>
+            <div>
+              <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                <h2 class="fw-bold mb-0 text-dark">{{ company.name }}</h2>
+                {% if company.is_verified %}
+                  <span class="badge bg-success-subtle text-success border border-success">
+                    <i class="fa-solid fa-check me-1"></i> {% trans "Verified Employer" %}
+                  </span>
+                {% endif %}
+              </div>
+              <p class="text-muted mb-2">{{ company.tagline|default:company.industry }}</p>
+              <div class="d-flex flex-wrap gap-3 small text-muted">
+                <span><i class="fa-solid fa-location-dot me-1"></i>{{ company.city }}, {{ company.state }}</span>
+                <span><i class="fa-solid fa-users me-1"></i>{{ company.get_company_size_display }}</span>
+                {% if company.founded_year %}<span><i class="fa-solid fa-calendar me-1"></i>Est. {{ company.founded_year }}</span>{% endif %}
+                {% if company.website %}
+                  <span><i class="fa-solid fa-globe me-1"></i><a href="{{ company.website }}" target="_blank" class="text-primary">{{ company.website }}</a></span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="text-md-end">
+            <span class="badge bg-warning-subtle text-warning-emphasis fs-6 py-2 px-3 mb-2 d-inline-block">
+              <i class="fa-solid fa-star text-warning me-1"></i> {{ company.average_rating }} / 5.0
+            </span>
+            <small class="text-muted d-block">{{ company.total_reviews_count }} {% trans "employee reviews" %}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Columns -->
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <!-- Open Positions -->
+        <div class="card-career p-4 mb-4">
+          <h4 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-briefcase me-2 text-primary"></i> {% trans "Open Positions" %} ({{ open_jobs.count }})</h4>
+          <div class="d-flex flex-column gap-3">
+            {% for job in open_jobs %}
+              <div class="border rounded-3 p-3 d-flex justify-content-between align-items-center flex-wrap gap-2 hover-bg-light">
+                <div>
+                  <h6 class="fw-bold mb-1">
+                    <a href="{% url 'jobs:detail' slug=job.slug %}" class="text-dark text-decoration-none">
+                      {{ job.title }}
+                    </a>
+                  </h6>
+                  <small class="text-muted">{{ job.location_city }} &bull; {{ job.salary_display }} &bull; {{ job.get_job_type_display }}</small>
+                </div>
+                <a href="{% url 'jobs:detail' slug=job.slug %}" class="btn btn-career btn-sm">
+                  {% trans "View & Apply" %} &rarr;
+                </a>
+              </div>
+            {% empty %}
+              <p class="text-muted small mb-0 py-3 text-center">{% trans "No active openings at this moment." %}</p>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- About Company -->
+        <div class="card-career p-4 mb-4">
+          <h5 class="fw-bold mb-3 text-dark">{% trans "About" %} {{ company.name }}</h5>
+          <div class="text-muted lh-lg">{{ company.about|linebreaks }}</div>
+        </div>
+
+        <!-- Perks & Benefits -->
+        {% if company.benefits %}
+        <div class="card-career p-4 mb-4">
+          <h5 class="fw-bold mb-3 text-dark">{% trans "Workplace Perks & Benefits" %}</h5>
+          <div class="text-muted lh-lg">{{ company.benefits|linebreaks }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Reviews Section -->
+        <div class="card-career p-4 mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-star me-2 text-warning"></i> {% trans "Employee & Candidate Reviews" %}</h5>
+          </div>
+
+          <!-- Add Review Form -->
+          {% if review_form %}
+            <div class="p-4 rounded-3 bg-light border mb-4">
+              <h6 class="fw-bold mb-3">{% trans "Write a Company Review" %}</h6>
+              <form action="{% url 'companies:add_review' slug=company.slug %}" method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label">{% trans "Rating (1 to 5)" %}</label>
+                    {{ review_form.rating }}
+                  </div>
+                  <div class="col-md-8">
+                    <label class="form-label">{% trans "Review Title" %} *</label>
+                    {{ review_form.title }}
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">{% trans "Pros" %}</label>
+                    {{ review_form.pros }}
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">{% trans "Cons" %}</label>
+                    {{ review_form.cons }}
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">{% trans "Review Summary" %} *</label>
+                    {{ review_form.review_text }}
+                  </div>
+                  <div class="col-12">
+                    <button type="submit" class="btn btn-career btn-sm">{% trans "Submit Review" %}</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          {% endif %}
+
+          <!-- Reviews List -->
+          <div class="d-flex flex-column gap-3">
+            {% for r in reviews %}
+              <div class="border-bottom pb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <h6 class="fw-bold mb-0 text-dark">{{ r.title }}</h6>
+                  <span class="badge bg-warning-subtle text-warning-emphasis">{{ r.rating }} ★</span>
+                </div>
+                <small class="text-muted d-block mb-2">Reviewed on {{ r.created_at|date:"M d, Y" }}</small>
+                <p class="small text-muted mb-2">{{ r.review_text }}</p>
+                {% if r.pros %}<p class="small text-success mb-1"><strong>Pros:</strong> {{ r.pros }}</p>{% endif %}
+                {% if r.cons %}<p class="small text-danger mb-0"><strong>Cons:</strong> {{ r.cons }}</p>{% endif %}
+              </div>
+            {% empty %}
+              <p class="text-muted small mb-0 text-center py-3">{% trans "No reviews yet. Be the first to share your experience!" %}</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Sidebar Specs -->
+      <div class="col-lg-4">
+        <div class="card-career p-4">
+          <h6 class="fw-bold mb-3 text-dark">{% trans "Company Overview" %}</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-3 mb-0">
+            <li class="d-flex justify-content-between">
+              <span class="text-muted">{% trans "Industry:" %}</span>
+              <strong>{{ company.industry }}</strong>
+            </li>
+            <li class="d-flex justify-content-between">
+              <span class="text-muted">{% trans "Company Size:" %}</span>
+              <strong>{{ company.get_company_size_display }}</strong>
+            </li>
+            <li class="d-flex justify-content-between">
+              <span class="text-muted">{% trans "City:" %}</span>
+              <strong>{{ company.city }}</strong>
+            </li>
+            <li class="d-flex justify-content-between">
+              <span class="text-muted">{% trans "State:" %}</span>
+              <strong>{{ company.state }}</strong>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

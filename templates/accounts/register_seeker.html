@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans "Job Seeker Registration" %} | CareerHub{% endblock %}
+
+{% block content %}
+<div class="py-5" style="background-color: var(--ch-bg);">
+  <div class="container py-3">
+    <div class="row justify-content-center">
+      <div class="col-lg-7 col-md-9">
+        <div class="card-career p-4 p-sm-5 shadow-sm">
+          <div class="text-center mb-4">
+            <span class="badge badge-ch-primary mb-2">{% trans "Candidate Portal" %}</span>
+            <h3 class="fw-bold mb-1">{% trans "Create Your Job Seeker Profile" %}</h3>
+            <p class="text-muted small">{% trans "Apply to high-growth Indian tech roles and get noticed by verified recruiters." %}</p>
+          </div>
+
+          <form method="post" action="{% url 'accounts:register_seeker' %}">
+            {% csrf_token %}
+            
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">{% trans "First Name" %} *</label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}<div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{% trans "Last Name" %} *</label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}<div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">{% trans "Email Address" %} *</label>
+                {{ form.email }}
+                {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{% trans "Mobile Number" %} *</label>
+                {{ form.phone }}
+                {% if form.phone.errors %}<div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">{% trans "Current City" %} *</label>
+                {{ form.city }}
+                {% if form.city.errors %}<div class="text-danger small mt-1">{{ form.city.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{% trans "State" %} *</label>
+                {{ form.state }}
+                {% if form.state.errors %}<div class="text-danger small mt-1">{{ form.state.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">{% trans "Target Job Category" %}</label>
+                {{ form.preferred_category }}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">{% trans "Password" %} *</label>
+                {{ form.password }}
+                {% if form.password.errors %}<div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{% trans "Confirm Password" %} *</label>
+                {{ form.confirm_password }}
+                {% if form.confirm_password.errors %}<div class="text-danger small mt-1">{{ form.confirm_password.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-12 mt-3">
+                <div class="form-check">
+                  {{ form.terms_accepted }}
+                  <label class="form-check-label small text-muted" for="{{ form.terms_accepted.id_for_label }}">
+                    {% trans "I accept the" %} <a href="{% url 'core:terms' %}" target="_blank">{% trans "Terms of Service" %}</a> {% trans "and" %} <a href="{% url 'core:privacy' %}" target="_blank">{% trans "Privacy Policy" %}</a>.
+                  </label>
+                </div>
+                {% if form.terms_accepted.errors %}<div class="text-danger small mt-1">{{ form.terms_accepted.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-12 mt-4">
+                <button type="submit" class="btn btn-career w-100 py-2 justify-content-center">
+                  <i class="fa-solid fa-user-plus"></i> {% trans "Create Free Account" %}
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div class="text-center pt-4 mt-4 border-top">
+            <span class="small text-muted">{% trans "Already registered?" %}</span>
+            <a href="{% url 'accounts:login' %}" class="small fw-bold ms-1">{% trans "Sign In" %}</a>
+            <span class="mx-2 text-muted">&bull;</span>
+            <a href="{% url 'accounts:register_recruiter' %}" class="small fw-bold text-accent" style="color: var(--ch-accent);">{% trans "Register as an Employer" %}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

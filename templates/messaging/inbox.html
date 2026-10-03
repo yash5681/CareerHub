@@ -1,0 +1,169 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Messages" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+  <h3 class="fw-bold mb-1 text-dark">{% trans "Direct Messaging" %}</h3>
+  <p class="text-muted small mb-0">{% trans "Private, direct communication between recruiters and candidates." %}</p>
+</div>
+
+<div class="chat-container shadow-sm">
+  <!-- Left Column: Conversations List -->
+  <div class="chat-threads">
+    <div class="p-3 border-bottom bg-light">
+      <h6 class="fw-bold mb-0 text-dark">{% trans "Conversations" %}</h6>
+    </div>
+
+    <div class="list-group list-group-flush">
+      {% for conv in conversations %}
+        <a href="{% url 'messaging:chat' conversation_id=conv.pk %}"
+           class="list-group-item list-group-item-action p-3 {% if active_conversation and active_conversation.pk == conv.pk %}active bg-light text-dark{% endif %}">
+          <div class="d-flex align-items-center gap-3">
+            {% if conv.other_user.avatar %}
+              <img src="{{ conv.other_user.avatar.url }}" alt="" width="42" height="42" class="rounded-circle object-fit-cover border">
+            {% else %}
+              <div class="brand-emblem" style="width: 42px; height: 42px; font-size: 1.1rem;">
+                {{ conv.other_user.first_name|default:conv.other_user.username|slice:":1"|upper }}
+              </div>
+            {% endif %}
+            <div class="lh-sm text-truncate flex-grow-1">
+              <div class="d-flex justify-content-between align-items-baseline">
+                <strong class="d-block text-dark small text-truncate">{{ conv.other_user.get_full_name }}</strong>
+                <small class="text-muted" style="font-size: 0.7rem;">{{ conv.updated_at|naturaltime }}</small>
+              </div>
+              {% if conv.job %}
+                <span class="badge badge-ch-primary small" style="font-size: 0.68rem;">{{ conv.job.title|truncatechars:22 }}</span>
+              {% endif %}
+              <p class="small text-muted mb-0 text-truncate mt-1" style="font-size: 0.78rem;">
+                {{ conv.latest_message.content|default:"No messages yet" }}
+              </p>
+            </div>
+          </div>
+        </a>
+      {% empty %}
+        <div class="p-4 text-center text-muted small">
+          <i class="fa-regular fa-comments fs-3 text-secondary opacity-50 mb-2"></i>
+          <p class="mb-0">{% trans "No active conversations yet." %}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Right Column: Active Conversation Window -->
+  <div class="chat-active-window">
+    {% if active_conversation %}
+      <!-- Chat Top Header -->
+      <div class="p-3 border-bottom bg-white d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          {% if active_other_user.avatar %}
+            <img src="{{ active_other_user.avatar.url }}" alt="" width="42" height="42" class="rounded-circle object-fit-cover">
+          {% else %}
+            <div class="brand-emblem" style="width: 42px; height: 42px; font-size: 1.1rem;">
+              {{ active_other_user.first_name|default:active_other_user.username|slice:":1"|upper }}
+            </div>
+          {% endif %}
+          <div>
+            <h6 class="fw-bold mb-0 text-dark">{{ active_other_user.get_full_name }}</h6>
+            <small class="text-muted">
+              {{ active_other_user.get_role_display }}
+              {% if active_conversation.job %}
+                &bull; Regarding: <strong>{{ active_conversation.job.title }}</strong>
+              {% endif %}
+            </small>
+          </div>
+        </div>
+          {% if active_conversation.job %}
+            <a href="{% url 'jobs:detail' slug=active_conversation.job.slug %}" class="btn btn-sm btn-outline-secondary">
+              {% trans "View Job" %}
+            </a>
+          {% endif %}
+        </div>
+
+        <!-- Chat Messages Area -->
+        <div class="chat-messages-area" id="chatMessagesArea">
+          {% for msg in chat_messages %}
+            <div class="chat-bubble {% if msg.sender == user %}chat-bubble-sent{% else %}chat-bubble-received{% endif %}">
+              <div class="fw-bold small mb-1 opacity-75" style="font-size: 0.72rem;">
+                {{ msg.sender.first_name }}
+              </div>
+              <div>{{ msg.content|linebreaksbr }}</div>
+              <div class="text-end small opacity-75 mt-1" style="font-size: 0.65rem;">
+                {{ msg.created_at|date:"h:i A" }}
+              </div>
+            </div>
+          {% empty %}
+            <div class="text-center text-muted my-auto py-5">
+              <p class="mb-0">{% trans "Send a message below to start this conversation." %}</p>
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Message Input Box -->
+        <div class="p-3 bg-white border-top">
+          <form id="chatForm" action="{% url 'messaging:send' conversation_id=active_conversation.pk %}" method="post" class="d-flex gap-2">
+            {% csrf_token %}
+            <input type="text" name="content" id="messageInput" class="form-control" placeholder="{% trans 'Type your message here...' %}" autocomplete="off" required>
+            <button type="submit" class="btn btn-career">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+    {% else %}
+      <div class="text-center text-muted my-auto py-5">
+        <i class="fa-regular fa-comment-dots display-2 opacity-25 mb-3"></i>
+        <h5 class="fw-bold">{% trans "Select a conversation to start chatting" %}</h5>
+        <p class="small text-muted">{% trans "Choose a thread from the left or message a recruiter directly from an application." %}</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const area = document.getElementById('chatMessagesArea');
+    if (area) {
+      area.scrollTop = area.scrollHeight;
+    }
+
+    const chatForm = document.getElementById('chatForm');
+    const input = document.getElementById('messageInput');
+    if (chatForm && area) {
+      chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = input.value.trim();
+        if (!text) return;
+
+        const formData = new FormData(chatForm);
+
+        // Optimistically append bubble
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble chat-bubble-sent';
+        bubble.innerHTML = `
+          <div class="fw-bold small mb-1 opacity-75" style="font-size: 0.72rem;">You</div>
+          <div>${text}</div>
+          <div class="text-end small opacity-75 mt-1" style="font-size: 0.65rem;">Just now</div>
+        `;
+        area.appendChild(bubble);
+        area.scrollTop = area.scrollHeight;
+        input.value = '';
+
+        try {
+          await fetch(chatForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          });
+        } catch (err) {
+          console.error('Failed to send message:', err);
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

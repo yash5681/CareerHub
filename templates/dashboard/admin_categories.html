@@ -1,0 +1,47 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Job Categories" %} | Admin Console{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+  <h3 class="fw-bold mb-1 text-dark">{% trans "Domain Taxonomy & Categories" %}</h3>
+  <p class="text-muted small mb-0">{% trans "Overview of job categories and skill tagging structures." %}</p>
+</div>
+
+<div class="card-career p-0 overflow-hidden shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-4">Icon & Name</th>
+          <th>Slug</th>
+          <th>Jobs Count</th>
+          <th>Featured</th>
+          <th class="pe-4 text-end">Order</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cat in categories %}
+          <tr>
+            <td class="ps-4">
+              <i class="{{ cat.icon }} text-primary me-2 fs-5"></i>
+              <strong>{{ cat.name }}</strong>
+            </td>
+            <td class="font-monospace small text-muted">{{ cat.slug }}</td>
+            <td>{{ cat.open_jobs_count }} open jobs</td>
+            <td>
+              {% if cat.is_featured %}
+                <span class="badge bg-success-subtle text-success">Featured</span>
+              {% else %}
+                <span class="badge bg-secondary-subtle text-secondary">Standard</span>
+              {% endif %}
+            </td>
+            <td class="pe-4 text-end">{{ cat.order }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

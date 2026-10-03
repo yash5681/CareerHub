@@ -1,0 +1,55 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Add Work Experience" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card-career p-4 p-md-5">
+      <h4 class="fw-bold mb-3 text-dark">{% trans "Add Work Experience" %}</h4>
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">{% trans "Company / Employer" %} *</label>
+            {{ form.company_name }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Designation / Role" %} *</label>
+            {{ form.job_title }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Location (City)" %}</label>
+            {{ form.location }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Start Date" %} *</label>
+            {{ form.start_date }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "End Date" %}</label>
+            {{ form.end_date }}
+          </div>
+          <div class="col-12">
+            <div class="form-check">
+              {{ form.is_current }}
+              <label class="form-check-label text-dark small" for="{{ form.is_current.id_for_label }}">
+                {% trans "I am currently working here" %}
+              </label>
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Key Responsibilities & Deliverables" %}</label>
+            {{ form.description }}
+          </div>
+          <div class="col-12 d-flex justify-content-end gap-2 pt-3 border-top">
+            <a href="{% url 'accounts:seeker_profile' %}" class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-career">{% trans "Save Experience" %}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

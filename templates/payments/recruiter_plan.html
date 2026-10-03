@@ -1,0 +1,95 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Subscription & Billing" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <h3 class="fw-bold mb-1 text-dark">{% trans "Subscription & Billing Management" %}</h3>
+    <p class="text-muted small mb-0">{% trans "View active plan privileges, posting quotas, and invoice receipts." %}</p>
+  </div>
+  <a href="{% url 'payments:pricing' %}" class="btn btn-career btn-sm">
+    <i class="fa-solid fa-arrow-up-right-dots me-1"></i> {% trans "Change / Upgrade Plan" %}
+  </a>
+</div>
+
+<!-- Active Plan Overview Card -->
+<div class="card-career p-4 mb-4">
+  <div class="row align-items-center g-4">
+    <div class="col-md-8">
+      <span class="badge bg-success-subtle text-success mb-2">{% trans "Active Subscription" %}</span>
+      <h4 class="fw-bold mb-1 text-dark">{{ subscription.plan.name }}</h4>
+      <p class="text-muted small mb-3">
+        Valid until <strong>{{ subscription.active_until|date:"M d, Y" }}</strong>
+        {% if subscription.has_expired %}<span class="badge bg-danger ms-1">{% trans "Expired" %}</span>{% endif %}
+      </p>
+
+      <div class="row g-3 small">
+        <div class="col-sm-4">
+          <span class="text-muted d-block">{% trans "Jobs Posted This Cycle:" %}</span>
+          <strong class="fs-6 text-dark">{{ subscription.jobs_posted_this_cycle }} / {{ subscription.plan.job_posting_limit }}</strong>
+        </div>
+        <div class="col-sm-4">
+          <span class="text-muted d-block">{% trans "Featured Promotions:" %}</span>
+          <strong class="fs-6 text-dark">{{ subscription.featured_jobs_posted_this_cycle }} / {{ subscription.plan.featured_job_limit }}</strong>
+        </div>
+        <div class="col-sm-4">
+          <span class="text-muted d-block">{% trans "Direct Candidate Inquiries:" %}</span>
+          <strong class="fs-6 text-dark">{{ subscription.plan.candidate_contacts_limit }}</strong>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 text-md-end">
+      <a href="{% url 'payments:pricing' %}" class="btn btn-career-outline">
+        {% trans "Browse All Plans" %}
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Transaction Ledger -->
+<h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-receipt me-2 text-primary"></i> {% trans "Payment & Order Ledger" %}</h5>
+<div class="card-career p-0 overflow-hidden shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-4">{% trans "Order ID" %}</th>
+          <th>{% trans "Plan" %}</th>
+          <th>{% trans "Amount" %}</th>
+          <th>{% trans "Status" %}</th>
+          <th>{% trans "Payment ID" %}</th>
+          <th class="pe-4 text-end">{% trans "Date" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in payments %}
+          <tr>
+            <td class="ps-4 font-monospace small">{{ p.razorpay_order_id }}</td>
+            <td class="fw-bold text-dark">{{ p.plan.name }}</td>
+            <td>₹{{ p.amount }}</td>
+            <td>
+              {% if p.status == 'success' %}
+                <span class="badge bg-success-subtle text-success">{% trans "Paid" %}</span>
+              {% elif p.status == 'created' %}
+                <span class="badge bg-warning-subtle text-warning">{% trans "Pending" %}</span>
+              {% else %}
+                <span class="badge bg-danger-subtle text-danger">{% trans "Failed" %}</span>
+              {% endif %}
+            </td>
+            <td class="font-monospace small text-muted">{{ p.razorpay_payment_id|default:"&mdash;" }}</td>
+            <td class="pe-4 text-end small text-muted">{{ p.created_at|date:"M d, Y" }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">
+              {% trans "No transaction receipts recorded yet." %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

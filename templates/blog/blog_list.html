@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Career Blog & Guidance" %} | CareerHub{% endblock %}
+
+{% block content %}
+<div class="py-5 bg-white border-bottom">
+  <div class="container py-3">
+    <div class="row align-items-center g-4">
+      <div class="col-md-7">
+        <span class="badge badge-ch-accent mb-2">{% trans "Career Insights" %}</span>
+        <h1 class="fw-bold mb-2">{% trans "Tech Career Guides & Salary Insights" %}</h1>
+        <p class="text-muted lead fs-6 mb-0">
+          {% trans "Proven strategies to ace technical interviews, optimize your Indian IT resume, and negotiate top compensation packages." %}
+        </p>
+      </div>
+      <div class="col-md-5">
+        <form method="get" class="d-flex gap-2">
+          <input type="text" name="q" class="form-control" placeholder="{% trans 'Search articles...' %}" value="{{ search_query }}">
+          <button type="submit" class="btn btn-career">{% trans "Search" %}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="py-5" style="background-color: var(--ch-bg);">
+  <div class="container">
+    <div class="row g-4">
+      {% for post in page_obj %}
+        <div class="col-lg-4 col-md-6">
+          <div class="card-career h-100 d-flex flex-column justify-content-between">
+            <div class="p-4">
+              <span class="badge badge-ch-primary mb-2">{{ post.category.name }}</span>
+              <h5 class="fw-bold mb-2">
+                <a href="{% url 'blog:detail' slug=post.slug %}" class="text-dark text-decoration-none">
+                  {{ post.title }}
+                </a>
+              </h5>
+              <p class="text-muted small mb-0">{{ post.excerpt|truncatechars:120 }}</p>
+            </div>
+            <div class="p-4 pt-0 d-flex justify-content-between align-items-center small text-muted border-top pt-3">
+              <span>{{ post.created_at|date:"M d, Y" }}</span>
+              <a href="{% url 'blog:detail' slug=post.slug %}" class="fw-bold text-primary">
+                {% trans "Read Guide" %} &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12 text-center py-5 text-muted">
+          <p>{% trans "No blog articles found." %}</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+      <nav class="mt-5 d-flex justify-content-center">
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link text-dark" href="?page={{ page_obj.previous_page_number }}">{% trans "Prev" %}</a></li>
+          {% endif %}
+          {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+              <a class="page-link {% if page_obj.number == num %}text-white{% else %}text-dark{% endif %}" href="?page={{ num }}" {% if page_obj.number == num %}style="background-color: var(--ch-primary); border-color: var(--ch-primary);"{% endif %}>{{ num }}</a>
+            </li>
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link text-dark" href="?page={{ page_obj.next_page_number }}">{% trans "Next" %}</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Payments Ledger" %} | Admin Console{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+  <h3 class="fw-bold mb-1 text-dark">{% trans "Razorpay Payments & Revenue Ledger" %}</h3>
+  <p class="text-muted small mb-0">{% trans "Real-time record of employer subscription payments and order signatures." %}</p>
+</div>
+
+<div class="card-career p-0 overflow-hidden shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0 small">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-4">Razorpay Order</th>
+          <th>Employer</th>
+          <th>Plan</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Payment ID</th>
+          <th class="pe-4 text-end">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in payments %}
+          <tr>
+            <td class="ps-4 font-monospace">{{ p.razorpay_order_id }}</td>
+            <td>
+              <strong>{{ p.user.get_full_name }}</strong>
+              <small class="text-muted d-block">{{ p.user.email }}</small>
+            </td>
+            <td><strong>{{ p.plan.name }}</strong></td>
+            <td class="fw-bold text-dark">₹{{ p.amount }}</td>
+            <td>
+              {% if p.status == 'success' %}
+                <span class="badge bg-success-subtle text-success">Success</span>
+              {% elif p.status == 'created' %}
+                <span class="badge bg-warning-subtle text-warning">Created</span>
+              {% else %}
+                <span class="badge bg-danger-subtle text-danger">Failed</span>
+              {% endif %}
+            </td>
+            <td class="font-monospace text-muted">{{ p.razorpay_payment_id|default:"&mdash;" }}</td>
+            <td class="pe-4 text-end text-muted">{{ p.created_at|date:"M d, Y" }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="text-center py-4 text-muted">No payment transactions recorded yet.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "My Applications" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+  <h3 class="fw-bold mb-1 text-dark">{% trans "Tracked Job Applications" %}</h3>
+  <p class="text-muted small mb-0">{% trans "Real-time visibility into your hiring stages, interviews, and recruiter reviews." %}</p>
+</div>
+
+<div class="d-flex flex-column gap-3">
+  {% for app in applications %}
+    <div class="card-career p-4">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <div class="company-logo-box">
+            {% if app.job.company.logo %}
+              <img src="{{ app.job.company.logo.url }}" alt="{{ app.job.company.name }}">
+            {% else %}
+              <i class="fa-solid fa-building"></i>
+            {% endif %}
+          </div>
+          <div>
+            <h5 class="fw-bold mb-1">
+              <a href="{% url 'jobs:detail' slug=app.job.slug %}" class="text-dark text-decoration-none">
+                {{ app.job.title }}
+              </a>
+            </h5>
+            <p class="text-muted small mb-1">
+              {{ app.job.company.name }} &bull; {{ app.job.location_city }} &bull; Applied {{ app.applied_at|naturaltime }}
+            </p>
+            {% if app.resume %}
+              <small class="text-muted"><i class="fa-regular fa-file-pdf me-1 text-danger"></i> Submitted Resume: <strong>{{ app.resume.title }}</strong></small>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="d-flex flex-column align-items-md-end gap-2">
+          <!-- Status Badge -->
+          <span class="badge {{ app.badge_color_class }} fs-6 py-2 px-3">
+            {{ app.get_status_display }}
+          </span>
+
+          <div class="d-flex gap-2">
+            <a href="{% url 'messaging:start' recipient_id=app.job.posted_by.id %}?job_id={{ app.job.id }}" class="btn btn-outline-secondary btn-sm" title="{% trans 'Message Recruiter' %}">
+              <i class="fa-regular fa-comment-dots me-1"></i> {% trans "Message" %}
+            </a>
+            {% if app.status == 'applied' or app.status == 'under_review' %}
+              <a href="{% url 'applications:withdraw' pk=app.pk %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Withdraw your application?');">
+                {% trans "Withdraw" %}
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Application Status Visual Step Progress -->
+      <div class="pt-3 mt-3 border-top">
+        <div class="d-flex justify-content-between small text-center text-muted flex-wrap gap-1">
+          <div class="{% if app.status != 'withdrawn' %}text-primary fw-bold{% endif %}">
+            <i class="fa-solid fa-circle-check"></i> {% trans "1. Applied" %}
+          </div>
+          <div class="{% if app.status == 'under_review' or app.status == 'shortlisted' or app.status == 'interview_scheduled' or app.status == 'selected' %}text-primary fw-bold{% endif %}">
+            <i class="fa-solid {% if app.status == 'under_review' or app.status == 'shortlisted' or app.status == 'interview_scheduled' or app.status == 'selected' %}fa-circle-check{% else %}fa-circle{% endif %}"></i> {% trans "2. Under Review" %}
+          </div>
+          <div class="{% if app.status == 'shortlisted' or app.status == 'interview_scheduled' or app.status == 'selected' %}text-primary fw-bold{% endif %}">
+            <i class="fa-solid {% if app.status == 'shortlisted' or app.status == 'interview_scheduled' or app.status == 'selected' %}fa-circle-check{% else %}fa-circle{% endif %}"></i> {% trans "3. Shortlisted" %}
+          </div>
+          <div class="{% if app.status == 'interview_scheduled' or app.status == 'selected' %}text-primary fw-bold{% endif %}">
+            <i class="fa-solid {% if app.status == 'interview_scheduled' or app.status == 'selected' %}fa-circle-check{% else %}fa-circle{% endif %}"></i> {% trans "4. Interview" %}
+          </div>
+          <div class="{% if app.status == 'selected' %}text-success fw-bold{% elif app.status == 'rejected' %}text-danger fw-bold{% endif %}">
+            <i class="fa-solid {% if app.status == 'selected' or app.status == 'rejected' %}fa-circle-check{% else %}fa-circle{% endif %}"></i> {% trans "5. Decision" %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="card-career p-5 text-center text-muted">
+      <i class="fa-solid fa-paper-plane display-3 text-secondary opacity-25 mb-3"></i>
+      <h4 class="fw-bold text-dark mb-2">{% trans "No applications submitted yet" %}</h4>
+      <p class="text-muted mb-4">{% trans "Explore open roles and submit your resume to start tracking opportunities." %}</p>
+      <a href="{% url 'jobs:list' %}" class="btn btn-career">
+        <i class="fa-solid fa-magnifying-glass me-1"></i> {% trans "Browse Jobs" %}
+      </a>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+  <!-- Role-based Sidebar Navigation -->
+  <aside class="dashboard-sidebar">
+    <div class="d-flex align-items-center gap-3 pb-3 mb-3 border-bottom">
+      {% if user.avatar %}
+        <img src="{{ user.avatar.url }}" alt="{{ user.get_full_name }}" width="48" height="48" class="rounded-circle object-fit-cover border border-secondary-subtle">
+      {% else %}
+        <div class="brand-emblem" style="width: 48px; height: 48px; font-size: 1.25rem;">
+          {{ user.first_name|default:user.username|slice:":1"|upper }}
+        </div>
+      {% endif %}
+      <div class="lh-sm text-truncate">
+        <h6 class="mb-0 fw-bold text-dark text-truncate">{{ user.get_full_name|default:user.username }}</h6>
+        <span class="badge bg-primary-subtle text-primary rounded-pill mt-1" style="font-size: 0.7rem;">{{ user.get_role_display }}</span>
+      </div>
+    </div>
+
+    <nav class="d-flex flex-column gap-1">
+      {% if user.is_job_seeker %}
+        <!-- Job Seeker Menu -->
+        <a href="{% url 'dashboard:seeker' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'seeker' %}active{% endif %}">
+          <i class="fa-solid fa-chart-pie"></i> {% trans "Dashboard" %}
+        </a>
+        <a href="{% url 'accounts:seeker_profile' %}" class="sidebar-nav-item {% if 'profile' in request.path %}active{% endif %}">
+          <i class="fa-regular fa-id-badge"></i> {% trans "My Profile" %}
+        </a>
+        <a href="{% url 'resumes:my_resumes' %}" class="sidebar-nav-item {% if 'resumes' in request.path %}active{% endif %}">
+          <i class="fa-regular fa-file-lines"></i> {% trans "Resume & Builder" %}
+        </a>
+        <a href="{% url 'applications:seeker_list' %}" class="sidebar-nav-item {% if 'applications' in request.path %}active{% endif %}">
+          <i class="fa-solid fa-paper-plane"></i> {% trans "My Applications" %}
+        </a>
+        <a href="{% url 'jobs:saved_jobs' %}" class="sidebar-nav-item {% if 'saved-jobs' in request.path %}active{% endif %}">
+          <i class="fa-regular fa-bookmark"></i> {% trans "Saved Jobs" %}
+        </a>
+        <a href="{% url 'jobs:alerts' %}" class="sidebar-nav-item {% if 'alerts' in request.path %}active{% endif %}">
+          <i class="fa-regular fa-bell"></i> {% trans "Job Alerts" %}
+        </a>
+        <a href="{% url 'jobs:recommended' %}" class="sidebar-nav-item {% if 'recommended' in request.path %}active{% endif %}">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> {% trans "Recommended Jobs" %}
+        </a>
+        <a href="{% url 'interviews:seeker_list' %}" class="sidebar-nav-item {% if 'interviews' in request.path %}active{% endif %}">
+          <i class="fa-regular fa-calendar-check"></i> {% trans "Interviews" %}
+        </a>
+        <a href="{% url 'messaging:inbox' %}" class="sidebar-nav-item {% if 'messages' in request.path %}active{% endif %}">
+          <i class="fa-regular fa-comment-dots"></i> {% trans "Messages" %}
+          {% if unread_messages_count > 0 %}
+            <span class="badge bg-danger ms-auto">{{ unread_messages_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'notifications:list' %}" class="sidebar-nav-item {% if 'notifications' in request.path %}active{% endif %}">
+          <i class="fa-regular fa-bell"></i> {% trans "Notifications" %}
+          {% if unread_notifications_count > 0 %}
+            <span class="badge bg-danger ms-auto">{{ unread_notifications_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'accounts:settings' %}" class="sidebar-nav-item {% if 'settings' in request.path %}active{% endif %}">
+          <i class="fa-solid fa-sliders"></i> {% trans "Settings" %}
+        </a>
+
+      {% elif user.is_recruiter %}
+        <!-- Recruiter Menu -->
+        <a href="{% url 'dashboard:recruiter' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'recruiter' %}active{% endif %}">
+          <i class="fa-solid fa-gauge-high"></i> {% trans "Dashboard" %}
+        </a>
+        <a href="{% url 'jobs:create' %}" class="sidebar-nav-item text-success fw-bold {% if request.resolver_match.url_name == 'create' %}active{% endif %}">
+          <i class="fa-solid fa-circle-plus text-success"></i> {% trans "Post a New Job" %}
+        </a>
+        <a href="{% url 'jobs:manage_jobs' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'manage_jobs' %}active{% endif %}">
+          <i class="fa-solid fa-briefcase"></i> {% trans "Manage Jobs" %}
+        </a>
+        <a href="{% url 'applications:recruiter_list' %}" class="sidebar-nav-item {% if 'applications' in request.path %}active{% endif %}">
+          <i class="fa-solid fa-users-viewfinder"></i> {% trans "Applicants Pipeline" %}
+        </a>
+        <a href="{% url 'interviews:recruiter_list' %}" class="sidebar-nav-item {% if 'interviews' in request.path %}active{% endif %}">
+          <i class="fa-regular fa-calendar-check"></i> {% trans "Interviews" %}
+        </a>
+        <a href="{% url 'companies:my_company' %}" class="sidebar-nav-item {% if 'companies' in request.path %}active{% endif %}">
+          <i class="fa-regular fa-building"></i> {% trans "Company Profile" %}
+        </a>
+        <a href="{% url 'messaging:inbox' %}" class="sidebar-nav-item {% if 'messages' in request.path %}active{% endif %}">
+          <i class="fa-regular fa-comment-dots"></i> {% trans "Messages" %}
+          {% if unread_messages_count > 0 %}
+            <span class="badge bg-danger ms-auto">{{ unread_messages_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'payments:recruiter_plan' %}" class="sidebar-nav-item {% if 'payments' in request.path %}active{% endif %}">
+          <i class="fa-solid fa-crown text-warning"></i> {% trans "Subscription & Billing" %}
+        </a>
+        <a href="{% url 'notifications:list' %}" class="sidebar-nav-item {% if 'notifications' in request.path %}active{% endif %}">
+          <i class="fa-regular fa-bell"></i> {% trans "Notifications" %}
+        </a>
+        <a href="{% url 'accounts:settings' %}" class="sidebar-nav-item {% if 'settings' in request.path %}active{% endif %}">
+          <i class="fa-solid fa-sliders"></i> {% trans "Settings" %}
+        </a>
+
+      {% elif user.is_admin_user %}
+        <!-- Admin Console Menu -->
+        <a href="{% url 'dashboard:admin_overview' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'admin_overview' %}active{% endif %}">
+          <i class="fa-solid fa-gauge-high"></i> {% trans "Admin Overview" %}
+        </a>
+        <a href="{% url 'dashboard:admin_analytics' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'admin_analytics' %}active{% endif %}">
+          <i class="fa-solid fa-chart-line"></i> {% trans "Analytics & Insights" %}
+        </a>
+        <a href="{% url 'dashboard:admin_users' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'admin_users' %}active{% endif %}">
+          <i class="fa-solid fa-users"></i> {% trans "Manage Users" %}
+        </a>
+        <a href="{% url 'dashboard:admin_jobs' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'admin_jobs' %}active{% endif %}">
+          <i class="fa-solid fa-briefcase"></i> {% trans "Manage Jobs" %}
+        </a>
+        <a href="{% url 'dashboard:admin_companies' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'admin_companies' %}active{% endif %}">
+          <i class="fa-solid fa-building"></i> {% trans "Manage Companies" %}
+        </a>
+        <a href="{% url 'dashboard:admin_applications' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'admin_applications' %}active{% endif %}">
+          <i class="fa-solid fa-file-contract"></i> {% trans "Applications Monitor" %}
+        </a>
+        <a href="{% url 'dashboard:admin_reports' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'admin_reports' %}active{% endif %}">
+          <i class="fa-solid fa-triangle-exclamation"></i> {% trans "Reports & Abuse" %}
+        </a>
+        <a href="{% url 'dashboard:admin_categories' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'admin_categories' %}active{% endif %}">
+          <i class="fa-solid fa-layer-group"></i> {% trans "Categories & Skills" %}
+        </a>
+        <a href="{% url 'dashboard:admin_payments' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'admin_payments' %}active{% endif %}">
+          <i class="fa-solid fa-indian-rupee-sign"></i> {% trans "Payments Ledger" %}
+        </a>
+        <a href="/django-admin/" target="_blank" class="sidebar-nav-item text-secondary">
+          <i class="fa-solid fa-gears"></i> {% trans "Django SuperAdmin" %}
+        </a>
+      {% endif %}
+
+      <div class="mt-4 pt-3 border-top">
+        <form action="{% url 'accounts:logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="sidebar-nav-item text-danger border-0 bg-transparent w-100 text-start">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> {% trans "Sign Out" %}
+          </button>
+        </form>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main Content Container -->
+  <section class="dashboard-main">
+    <div class="container-fluid">
+      {% block dashboard_content %}{% endblock %}
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Company Profile" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    <div class="card-career p-4 p-md-5">
+      <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+          <span class="badge badge-ch-accent mb-2">{% trans "Employer Branding" %}</span>
+          <h3 class="fw-bold mb-1 text-dark">{% trans "Manage Company Profile" %}</h3>
+          <p class="text-muted small mb-0">{% trans "Update branding, about section, culture, perks, and contact details." %}</p>
+        </div>
+        {% if company %}
+          <a href="{% url 'companies:detail' slug=company.slug %}" target="_blank" class="btn btn-outline-secondary btn-sm">
+            <i class="fa-solid fa-eye me-1"></i> {% trans "View Public Profile" %}
+          </a>
+        {% endif %}
+      </div>
+
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label class="form-label">{% trans "Company Name" %} *</label>
+            {{ form.name }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Company Logo" %}</label>
+            {{ form.logo }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Tagline / Punchline" %}</label>
+            {{ form.tagline }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Industry / Sector" %} *</label>
+            {{ form.industry }}
+          </div>
+          <div class="col-md-3 col-6">
+            <label class="form-label">{% trans "Company Size" %} *</label>
+            {{ form.company_size }}
+          </div>
+          <div class="col-md-3 col-6">
+            <label class="form-label">{% trans "Founded Year" %}</label>
+            {{ form.founded_year }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Official Website" %}</label>
+            {{ form.website }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Contact Email" %} *</label>
+            {{ form.email }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Contact Phone" %}</label>
+            {{ form.phone }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "HQ City" %} *</label>
+            {{ form.city }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "HQ State" %} *</label>
+            {{ form.state }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Office Address" %}</label>
+            {{ form.address }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "About Company / Story" %} *</label>
+            {{ form.about }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Employee Perks, Benefits & Culture" %}</label>
+            {{ form.benefits }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "LinkedIn Page URL" %}</label>
+            {{ form.linkedin_url }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Twitter / X Profile URL" %}</label>
+            {{ form.twitter_url }}
+          </div>
+          <div class="col-12 d-flex justify-content-end gap-2 pt-3 border-top">
+            <button type="submit" class="btn btn-career">
+              <i class="fa-solid fa-floppy-disk me-1"></i> {% trans "Save Company Information" %}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

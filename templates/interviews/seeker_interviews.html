@@ -1,0 +1,94 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "My Interviews" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+  <h3 class="fw-bold mb-1 text-dark">{% trans "Your Interview Schedule" %}</h3>
+  <p class="text-muted small mb-0">{% trans "Upcoming meetings, Google Meet / Zoom links, and past interview feedback." %}</p>
+</div>
+
+<h5 class="fw-bold text-dark mb-3"><i class="fa-regular fa-calendar-check me-2 text-primary"></i> {% trans "Upcoming Rounds" %}</h5>
+<div class="row g-3 mb-5">
+  {% for iv in upcoming_interviews %}
+    <div class="col-lg-6">
+      <div class="card-career p-4 h-100 border-start border-4 border-success d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <span class="badge bg-success-subtle text-success mb-1">{% trans "Invitation Confirmed" %}</span>
+              <h5 class="fw-bold mb-0 text-dark">{{ iv.interview_round }}</h5>
+            </div>
+            <span class="badge bg-primary-subtle text-primary">{{ iv.get_interview_type_display }}</span>
+          </div>
+
+          <p class="small text-muted mb-2">
+            Company: <strong>{{ iv.job.company.name }}</strong><br>
+            Role: <strong>{{ iv.job.title }}</strong> &bull; Recruiter: {{ iv.recruiter.get_full_name }}
+          </p>
+
+          <div class="p-3 rounded-3 bg-light border small text-dark mb-3">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="fa-solid fa-calendar text-primary"></i>
+              <strong>{{ iv.interview_date|date:"l, M d, Y" }}</strong>
+              <span class="mx-1">&bull;</span>
+              <i class="fa-solid fa-clock text-primary"></i>
+              <strong>{{ iv.interview_time|time:"h:i A" }} IST</strong>
+            </div>
+
+            {% if iv.meeting_url %}
+              <div class="mt-2">
+                <a href="{{ iv.meeting_url }}" target="_blank" class="btn btn-career btn-sm">
+                  <i class="fa-solid fa-video me-1"></i> {% trans "Join Video Call" %}
+                </a>
+              </div>
+            {% endif %}
+
+            {% if iv.location_address %}
+              <div class="mt-2 text-muted">
+                <i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ iv.location_address }}
+              </div>
+            {% endif %}
+
+            {% if iv.notes %}
+              <div class="mt-2 pt-2 border-top text-muted small">
+                <strong>{% trans "Note from recruiter:" %}</strong> {{ iv.notes }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="pt-2 border-top d-flex justify-content-between align-items-center">
+          <a href="{% url 'jobs:detail' slug=iv.job.slug %}" class="small text-primary fw-semibold">
+            {% trans "View Job Posting" %} &rarr;
+          </a>
+          <a href="{% url 'messaging:start' recipient_id=iv.recruiter.id %}?job_id={{ iv.job.id }}" class="btn btn-sm btn-outline-secondary">
+            <i class="fa-regular fa-comment-dots me-1"></i> {% trans "Contact Recruiter" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="col-12">
+      <div class="card-career p-4 text-center text-muted">
+        <p class="mb-0">{% trans "No upcoming interviews scheduled right now. As soon as a recruiter schedules a round, it will appear here." %}</p>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% if past_interviews %}
+<h5 class="fw-bold text-dark mb-3">{% trans "Past Interviews" %}</h5>
+<div class="row g-3">
+  {% for iv in past_interviews %}
+    <div class="col-lg-6">
+      <div class="card-career p-3 bg-light">
+        <h6 class="fw-bold mb-1">{{ iv.interview_round }} &mdash; {{ iv.job.company.name }}</h6>
+        <small class="text-muted">{{ iv.interview_date|date:"M d, Y" }} &bull; {{ iv.job.title }}</small>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

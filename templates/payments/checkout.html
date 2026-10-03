@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Complete Payment" %} | CareerHub{% endblock %}
+
+{% block content %}
+<div class="py-5" style="background-color: var(--ch-bg);">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="card-career p-4 p-md-5">
+          <div class="text-center mb-4">
+            <div class="stat-icon-badge mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.75rem;">
+              <i class="fa-solid fa-lock text-success"></i>
+            </div>
+            <h4 class="fw-bold mb-1 text-dark">{% trans "Secure Razorpay Checkout" %}</h4>
+            <p class="text-muted small">{% trans "Review your subscription order details before completing payment." %}</p>
+          </div>
+
+          <!-- Order Summary Card -->
+          <div class="p-3 rounded-3 bg-light border mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted">{% trans "Subscription Plan:" %}</span>
+              <strong class="text-dark">{{ plan.name }}</strong>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted">{% trans "Billing Frequency:" %}</span>
+              <span class="text-dark">{{ plan.get_billing_period_display }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted">{% trans "Job Posting Allowance:" %}</span>
+              <span class="text-dark">{{ plan.job_posting_limit }} {% trans "Active Jobs" %}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+              <span class="fw-bold text-dark fs-5">{% trans "Total Payable:" %}</span>
+              <strong class="text-primary fs-4" style="color: var(--ch-primary) !important;">₹{{ plan.price|floatformat:2 }}</strong>
+            </div>
+          </div>
+
+          <!-- Razorpay Trigger Button -->
+          <div class="d-grid gap-2 mb-3">
+            <button id="rzp-button" class="btn btn-career py-3 fs-6 fw-bold justify-content-center">
+              <i class="fa-solid fa-credit-card me-2"></i> {% trans "Pay with Razorpay (Cards, UPI, NetBanking)" %}
+            </button>
+          </div>
+
+          <!-- Verification Hidden Form -->
+          <form id="verifyForm" action="{% url 'payments:verify_payment' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="razorpay_order_id" id="razorpay_order_id" value="{{ order_id }}">
+            <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id" value="">
+            <input type="hidden" name="razorpay_signature" id="razorpay_signature" value="">
+          </form>
+
+          <!-- Safe Test Mode Fallback Option -->
+          <div class="mt-4 pt-3 border-top text-center">
+            <p class="small text-muted mb-2">{% trans "Testing in Sandbox / Demo Mode?" %}</p>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="simulateTestPayment()">
+              <i class="fa-solid fa-vial me-1"></i> {% trans "Simulate Successful Test Payment" %}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const options = {
+    "key": "{{ razorpay_key_id }}",
+    "amount": "{{ amount_in_paise }}",
+    "currency": "INR",
+    "name": "CareerHub India",
+    "description": "{{ plan.name }} Recruiter Plan",
+    "image": "{% static 'images/logo-icon.svg' %}",
+    "order_id": "{{ order_id }}",
+    "handler": function (response){
+      document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+      document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+      document.getElementById('razorpay_signature').value = response.razorpay_signature;
+      document.getElementById('verifyForm').submit();
+    },
+    "prefill": {
+      "name": "{{ user.get_full_name }}",
+      "email": "{{ user.email }}",
+      "contact": "{{ user.phone }}"
+    },
+    "theme": {
+      "color": "#4A2E1F"
+    }
+  };
+
+  document.getElementById('rzp-button').onclick = function(e){
+    try {
+      const rzp1 = new Razorpay(options);
+      rzp1.open();
+    } catch(err) {
+      alert("Opening test checkout simulator...");
+      simulateTestPayment();
+    }
+    e.preventDefault();
+  }
+
+  function simulateTestPayment() {
+    document.getElementById('razorpay_payment_id').value = "pay_test_" + Math.random().toString(36).substring(7);
+    document.getElementById('razorpay_signature').value = "sig_test_sandbox_valid";
+    document.getElementById('verifyForm').submit();
+  }
+</script>
+{% endblock %}

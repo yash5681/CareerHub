@@ -1,0 +1,192 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Job Seeker Dashboard" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<!-- Welcome & Profile Strength Banner -->
+<div class="card-career p-4 mb-4 border-start border-4 border-primary">
+  <div class="row align-items-center g-3">
+    <div class="col-lg-8">
+      <h3 class="fw-bold mb-1 text-dark">
+        {% trans "Welcome back," %} {{ user.first_name|default:user.username }}! 👋
+      </h3>
+      <p class="text-muted small mb-0">
+        {% trans "Here is your career search progress, interview status, and recent activity." %}
+      </p>
+    </div>
+    <div class="col-lg-4 text-lg-end">
+      <div class="d-inline-block text-start">
+        <div class="d-flex justify-content-between small text-muted mb-1">
+          <span>{% trans "Profile Completion" %}</span>
+          <strong class="text-dark">{{ profile.completion_percentage }}%</strong>
+        </div>
+        <div class="progress" style="height: 8px; width: 180px;">
+          <div class="progress-bar bg-success" role="progressbar" style="width: {{ profile.completion_percentage }}%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4 Key Metric Stat Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-sm-6">
+    <div class="stat-card d-flex align-items-center justify-content-between">
+      <div>
+        <small class="text-muted d-block mb-1">{% trans "Applications Sent" %}</small>
+        <h3 class="fw-bold mb-0 text-dark">{{ total_apps }}</h3>
+      </div>
+      <div class="stat-icon-badge">
+        <i class="fa-solid fa-paper-plane"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6">
+    <div class="stat-card d-flex align-items-center justify-content-between">
+      <div>
+        <small class="text-muted d-block mb-1">{% trans "Shortlisted" %}</small>
+        <h3 class="fw-bold mb-0 text-success">{{ shortlisted_apps }}</h3>
+      </div>
+      <div class="stat-icon-badge" style="background-color: var(--ch-accent-light); color: var(--ch-accent);">
+        <i class="fa-solid fa-check-double"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6">
+    <div class="stat-card d-flex align-items-center justify-content-between">
+      <div>
+        <small class="text-muted d-block mb-1">{% trans "Interviews Scheduled" %}</small>
+        <h3 class="fw-bold mb-0 text-primary">{{ interview_apps }}</h3>
+      </div>
+      <div class="stat-icon-badge">
+        <i class="fa-solid fa-calendar-check"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6">
+    <div class="stat-card d-flex align-items-center justify-content-between">
+      <div>
+        <small class="text-muted d-block mb-1">{% trans "Saved Bookmarks" %}</small>
+        <h3 class="fw-bold mb-0 text-dark">{{ saved_count }}</h3>
+      </div>
+      <div class="stat-icon-badge">
+        <i class="fa-regular fa-bookmark"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Action Shortcuts -->
+<div class="card-career p-3 mb-4 bg-white">
+  <div class="d-flex align-items-center gap-2 flex-wrap">
+    <span class="small fw-bold text-muted me-2">{% trans "Quick Actions:" %}</span>
+    <a href="{% url 'jobs:list' %}" class="btn btn-sm btn-career py-1 px-3">
+      <i class="fa-solid fa-magnifying-glass me-1"></i> {% trans "Find Jobs" %}
+    </a>
+    <a href="{% url 'resumes:builder' %}" class="btn btn-sm btn-career-outline py-1 px-3">
+      <i class="fa-solid fa-wand-magic-sparkles me-1"></i> {% trans "Resume Builder" %}
+    </a>
+    <a href="{% url 'accounts:edit_seeker_profile' %}" class="btn btn-sm btn-outline-secondary py-1 px-3">
+      <i class="fa-solid fa-pen me-1"></i> {% trans "Edit Profile" %}
+    </a>
+    <a href="{% url 'jobs:recommended' %}" class="btn btn-sm btn-outline-secondary py-1 px-3">
+      <i class="fa-solid fa-sparkles me-1"></i> {% trans "Recommended Jobs" %}
+    </a>
+  </div>
+</div>
+
+<!-- Main Dashboard Grid -->
+<div class="row g-4">
+  <!-- Left Column: Recent Applications -->
+  <div class="col-lg-8">
+    <div class="card-career p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0 text-dark">{% trans "Recent Applications" %}</h5>
+        <a href="{% url 'applications:seeker_list' %}" class="small text-primary fw-semibold">
+          {% trans "View All" %} &rarr;
+        </a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light small">
+            <tr>
+              <th>{% trans "Role & Company" %}</th>
+              <th>{% trans "Status" %}</th>
+              <th>{% trans "Applied Date" %}</th>
+              <th class="text-end">{% trans "Action" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for app in recent_applications %}
+              <tr>
+                <td>
+                  <strong>{{ app.job.title }}</strong>
+                  <small class="text-muted d-block">{{ app.job.company.name }}</small>
+                </td>
+                <td>
+                  <span class="badge {{ app.badge_color_class }}">{{ app.get_status_display }}</span>
+                </td>
+                <td class="small text-muted">{{ app.applied_at|naturaltime }}</td>
+                <td class="text-end">
+                  <a href="{% url 'jobs:detail' slug=app.job.slug %}" class="btn btn-sm btn-light" title="View Job">
+                    <i class="fa-solid fa-arrow-right"></i>
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="4" class="text-center py-4 text-muted small">
+                  {% trans "No applications yet. Search open jobs and apply today!" %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Upcoming Interviews & Notifications -->
+  <div class="col-lg-4">
+    <!-- Upcoming Interviews Card -->
+    <div class="card-career p-4 mb-4">
+      <h6 class="fw-bold text-dark mb-3"><i class="fa-regular fa-calendar-check me-2 text-primary"></i> {% trans "Upcoming Interviews" %}</h6>
+      {% for iv in upcoming_interviews %}
+        <div class="border-bottom pb-2 mb-2">
+          <strong class="d-block text-dark small">{{ iv.interview_round }}</strong>
+          <small class="text-muted">{{ iv.job.company.name }} &bull; {{ iv.interview_date|date:"M d" }} at {{ iv.interview_time|time:"h:i A" }}</small>
+          {% if iv.meeting_url %}
+            <div class="mt-1">
+              <a href="{{ iv.meeting_url }}" target="_blank" class="badge bg-primary text-white text-decoration-none">
+                <i class="fa-solid fa-video me-1"></i> Join Call
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      {% empty %}
+        <small class="text-muted d-block py-2">{% trans "No upcoming interviews." %}</small>
+      {% endfor %}
+      <a href="{% url 'interviews:seeker_list' %}" class="small text-primary d-block mt-2">{% trans "View interview schedule" %} &rarr;</a>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card-career p-4">
+      <h6 class="fw-bold text-dark mb-3"><i class="fa-regular fa-bell me-2 text-primary"></i> {% trans "Recent Activity" %}</h6>
+      {% for n in recent_notifications %}
+        <div class="border-bottom pb-2 mb-2 small">
+          <strong class="d-block text-dark">{{ n.title }}</strong>
+          <small class="text-muted">{{ n.created_at|naturaltime }}</small>
+        </div>
+      {% empty %}
+        <small class="text-muted d-block py-2">{% trans "No activity recorded." %}</small>
+      {% endfor %}
+      <a href="{% url 'notifications:list' %}" class="small text-primary d-block mt-2">{% trans "All notifications" %} &rarr;</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

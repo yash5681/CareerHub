@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Recruiter Plans & Pricing" %} | CareerHub{% endblock %}
+
+{% block content %}
+<div class="py-5" style="background-color: var(--ch-bg);">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <span class="badge badge-ch-accent mb-2">{% trans "Transparent Hiring Plans" %}</span>
+      <h2 class="display-6 fw-bold mb-2">{% trans "Choose the Right Plan to Scale Your Team" %}</h2>
+      <p class="text-muted col-lg-6 mx-auto">
+        {% trans "Whether you are an early-stage Indian startup or an enterprise hiring at scale, CareerHub provides verified tech candidate pipelines." %}
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center align-items-stretch">
+      {% for plan in plans %}
+        <div class="col-lg-4 col-md-6">
+          <div class="card-career p-4 p-xl-5 h-100 d-flex flex-column justify-content-between position-relative {% if plan.is_popular %}border-2 border-primary shadow-lg{% endif %}">
+            {% if plan.is_popular %}
+              <div class="position-absolute top-0 start-50 translate-middle">
+                <span class="badge badge-featured px-3 py-1 shadow-sm">{% trans "Most Popular Choice" %}</span>
+              </div>
+            {% endif %}
+
+            <div>
+              <div class="mb-4">
+                <h4 class="fw-bold mb-1 text-dark">{{ plan.name }}</h4>
+                <p class="text-muted small mb-3">{{ plan.description }}</p>
+                <div class="d-flex align-items-baseline gap-1">
+                  <h2 class="display-5 fw-bold text-dark mb-0">
+                    {% if plan.price == 0 %}
+                      {% trans "Free" %}
+                    {% else %}
+                      ₹{{ plan.price|floatformat:0 }}
+                    {% endif %}
+                  </h2>
+                  {% if plan.price > 0 %}
+                    <span class="text-muted">/ {{ plan.get_billing_period_display }}</span>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Feature Bullet Checklist -->
+              <ul class="list-unstyled d-flex flex-column gap-3 small mb-4 text-dark">
+                <li class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-circle-check text-success"></i>
+                  <span><strong>{{ plan.job_posting_limit }}</strong> {% trans "Active Job Postings" %}</span>
+                </li>
+                <li class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-circle-check text-success"></i>
+                  <span><strong>{{ plan.featured_job_limit }}</strong> {% trans "Featured Homepage Promotions" %}</span>
+                </li>
+                <li class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-circle-check text-success"></i>
+                  <span><strong>{{ plan.candidate_contacts_limit }}</strong> {% trans "Direct Candidate Inquiries" %}</span>
+                </li>
+                {% for feat in plan.get_features %}
+                  <li class="d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-circle-check text-success"></i>
+                    <span>{{ feat }}</span>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <!-- CTA Button -->
+            <div class="pt-3 border-top mt-auto">
+              {% if user.is_authenticated and user.is_recruiter %}
+                {% if user_plan and user_plan.id == plan.id %}
+                  <button class="btn btn-outline-success w-100 disabled py-2 fw-semibold">
+                    <i class="fa-solid fa-check me-1"></i> {% trans "Current Active Plan" %}
+                  </button>
+                {% else %}
+                  <a href="{% url 'payments:create_order' plan_slug=plan.slug %}" class="btn {% if plan.is_popular %}btn-career{% else %}btn-career-outline{% endif %} w-100 py-2 justify-content-center">
+                    {% if plan.is_free %}{% trans "Get Started Free" %}{% else %}{% trans "Upgrade Now" %}{% endif %}
+                  </a>
+                {% endif %}
+              {% else %}
+                <a href="{% url 'accounts:register_recruiter' %}" class="btn {% if plan.is_popular %}btn-career{% else %}btn-career-outline{% endif %} w-100 py-2 justify-content-center">
+                  {% trans "Get Started" %}
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Security Guarantee Badge -->
+    <div class="text-center mt-5 pt-3">
+      <p class="small text-muted mb-0">
+        <i class="fa-solid fa-shield-halved text-success me-1"></i>
+        {% trans "Secured with Razorpay 256-Bit SSL Encryption. Supported via UPI, NetBanking, Credit Cards & RuPay." %}
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Admin Console" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <h3 class="fw-bold mb-1 text-dark">{% trans "CareerHub Administration Console" %}</h3>
+    <p class="text-muted small mb-0">{% trans "Platform-wide governance, security, moderations, and analytics." %}</p>
+  </div>
+  <a href="/django-admin/" target="_blank" class="btn btn-outline-dark btn-sm">
+    <i class="fa-solid fa-gears me-1"></i> {% trans "Django SuperAdmin" %}
+  </a>
+</div>
+
+<!-- Key Admin KPI Metrics -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-sm-6">
+    <div class="stat-card">
+      <small class="text-muted d-block mb-1">{% trans "Total Platform Users" %}</small>
+      <h3 class="fw-bold mb-0 text-dark">{{ kpis.total_users }}</h3>
+      <small class="text-muted">{{ kpis.job_seekers }} seekers &bull; {{ kpis.recruiters }} employers</small>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6">
+    <div class="stat-card">
+      <small class="text-muted d-block mb-1">{% trans "Total Job Postings" %}</small>
+      <h3 class="fw-bold mb-0 text-primary">{{ kpis.total_jobs }}</h3>
+      <small class="text-success">{{ kpis.active_jobs }} active / open</small>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6">
+    <div class="stat-card">
+      <small class="text-muted d-block mb-1">{% trans "Total Applications" %}</small>
+      <h3 class="fw-bold mb-0 text-dark">{{ kpis.total_applications }}</h3>
+      <small class="text-muted">{{ kpis.total_companies }} registered companies</small>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6">
+    <div class="stat-card">
+      <small class="text-muted d-block mb-1">{% trans "Razorpay Revenue" %}</small>
+      <h3 class="fw-bold mb-0 text-success">₹{{ kpis.total_revenue|intcomma }}</h3>
+      <small class="text-danger">{{ kpis.pending_reports }} {% trans "pending reports" %}</small>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Navigation Bar -->
+<div class="card-career p-3 mb-4 bg-white">
+  <div class="d-flex align-items-center gap-2 flex-wrap">
+    <span class="small fw-bold text-muted me-2">{% trans "Admin Modules:" %}</span>
+    <a href="{% url 'dashboard:admin_users' %}" class="btn btn-sm btn-outline-secondary py-1 px-3">
+      <i class="fa-solid fa-users me-1"></i> {% trans "Users" %}
+    </a>
+    <a href="{% url 'dashboard:admin_jobs' %}" class="btn btn-sm btn-outline-secondary py-1 px-3">
+      <i class="fa-solid fa-briefcase me-1"></i> {% trans "Jobs" %}
+    </a>
+    <a href="{% url 'dashboard:admin_companies' %}" class="btn btn-sm btn-outline-secondary py-1 px-3">
+      <i class="fa-solid fa-building me-1"></i> {% trans "Companies" %}
+    </a>
+    <a href="{% url 'dashboard:admin_reports' %}" class="btn btn-sm btn-outline-danger py-1 px-3">
+      <i class="fa-solid fa-triangle-exclamation me-1"></i> {% trans "Reports" %}
+    </a>
+    <a href="{% url 'dashboard:admin_categories' %}" class="btn btn-sm btn-outline-secondary py-1 px-3">
+      <i class="fa-solid fa-layer-group me-1"></i> {% trans "Categories" %}
+    </a>
+    <a href="{% url 'dashboard:admin_payments' %}" class="btn btn-sm btn-outline-success py-1 px-3">
+      <i class="fa-solid fa-indian-rupee-sign me-1"></i> {% trans "Payments" %}
+    </a>
+  </div>
+</div>
+
+<!-- Admin Recent Listings & Audit -->
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card-career p-4">
+      <h5 class="fw-bold text-dark mb-3">{% trans "Recent User Registrations" %}</h5>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 small">
+          <thead class="table-light">
+            <tr>
+              <th>{% trans "User" %}</th>
+              <th>{% trans "Role" %}</th>
+              <th>{% trans "Joined" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in recent_users %}
+              <tr>
+                <td>
+                  <strong>{{ u.get_full_name|default:u.username }}</strong>
+                  <small class="text-muted d-block">{{ u.email }}</small>
+                </td>
+                <td>
+                  <span class="badge bg-secondary-subtle text-secondary">{{ u.get_role_display }}</span>
+                </td>
+                <td class="text-muted">{{ u.date_joined|date:"M d" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card-career p-4">
+      <h5 class="fw-bold text-dark mb-3">{% trans "Recent Job Postings" %}</h5>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 small">
+          <thead class="table-light">
+            <tr>
+              <th>{% trans "Title & Company" %}</th>
+              <th>{% trans "Status" %}</th>
+              <th>{% trans "Posted" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for j in recent_jobs %}
+              <tr>
+                <td>
+                  <strong>{{ j.title }}</strong>
+                  <small class="text-muted d-block">{{ j.company.name }}</small>
+                </td>
+                <td>
+                  <span class="badge bg-success-subtle text-success">{{ j.get_status_display }}</span>
+                </td>
+                <td class="text-muted">{{ j.created_at|date:"M d" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

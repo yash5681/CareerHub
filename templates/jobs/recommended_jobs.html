@@ -1,0 +1,69 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Recommended Jobs" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+  <div class="d-flex align-items-center gap-2 mb-1">
+    <h3 class="fw-bold text-dark mb-0">{% trans "Recommended for You" %}</h3>
+    <span class="badge bg-warning-subtle text-warning-emphasis"><i class="fa-solid fa-wand-magic-sparkles me-1"></i> Match Engine</span>
+  </div>
+  <p class="text-muted small mb-0">{% trans "Hand-picked roles tailored to your declared skills, experience, and location preferences." %}</p>
+</div>
+
+<div class="d-flex flex-column gap-3">
+  {% for job in page_obj %}
+    <div class="card-career job-card">
+      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-3">
+        <div class="d-flex gap-3">
+          <div class="company-logo-box">
+            {% if job.company.logo %}
+              <img src="{{ job.company.logo.url }}" alt="{{ job.company.name }}">
+            {% else %}
+              <i class="fa-solid fa-building"></i>
+            {% endif %}
+          </div>
+          <div>
+            <h5 class="fw-bold mb-1">
+              <a href="{% url 'jobs:detail' slug=job.slug %}" class="text-dark text-decoration-none">
+                {{ job.title }}
+              </a>
+            </h5>
+            <p class="text-muted small mb-2">{{ job.company.name }} &bull; {{ job.location_city }}</p>
+            <div class="d-flex flex-wrap gap-2 mb-2">
+              <span class="badge badge-ch-primary">{{ job.salary_display }}</span>
+              <span class="badge badge-ch-accent">{{ job.experience_display }}</span>
+              <span class="badge bg-light text-dark border">{{ job.get_work_mode_display }}</span>
+            </div>
+            <div class="d-flex flex-wrap gap-1">
+              {% for skill in job.skills.all %}
+                <span class="badge bg-secondary-subtle text-secondary" style="font-size: 0.72rem;">{{ skill.name }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex flex-sm-column align-items-end justify-content-between gap-2 h-100 flex-shrink-0">
+          <button class="btn btn-sm btn-light rounded-circle p-2 btn-save-job {% if job.id in user_saved_job_ids %}active text-danger{% endif %}"
+                  data-job-id="{{ job.id }}" title="{% trans 'Bookmark' %}">
+            <i class="fa-{% if job.id in user_saved_job_ids %}solid{% else %}regular{% endif %} fa-bookmark"></i>
+          </button>
+          <a href="{% url 'jobs:detail' slug=job.slug %}" class="btn btn-career btn-sm">
+            {% trans "Apply Now" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="card-career p-5 text-center text-muted">
+      <i class="fa-solid fa-wand-magic-sparkles display-3 text-secondary opacity-25 mb-3"></i>
+      <h4 class="fw-bold text-dark mb-2">{% trans "Complete your profile for personalized recommendations" %}</h4>
+      <p class="text-muted mb-4">{% trans "Add your skills, target city, and work preferences to unlock matching job alerts." %}</p>
+      <a href="{% url 'accounts:edit_seeker_profile' %}" class="btn btn-career">
+        <i class="fa-solid fa-pen-to-square me-1"></i> {% trans "Update Profile Skills" %}
+      </a>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

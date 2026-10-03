@@ -1,0 +1,102 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Abuse & Reports Queue" %} | Admin Console{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+  <h3 class="fw-bold mb-1 text-dark">{% trans "Moderation & Grievance Queue" %}</h3>
+  <p class="text-muted small mb-0">{% trans "Review candidate fraud complaints and take resolution actions." %}</p>
+</div>
+
+<!-- Job Reports -->
+<h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-triangle-exclamation text-warning me-2"></i> {% trans "Job Posting Reports" %}</h5>
+<div class="card-career p-0 overflow-hidden shadow-sm mb-5">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0 small">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-4">Reported Job</th>
+          <th>Reason</th>
+          <th>Details</th>
+          <th>Reported By</th>
+          <th>Status</th>
+          <th class="pe-4 text-end">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in job_reports %}
+          <tr>
+            <td class="ps-4">
+              <strong>{{ r.job.title }}</strong>
+              <small class="text-muted d-block">{{ r.job.company.name }}</small>
+            </td>
+            <td><span class="badge bg-danger-subtle text-danger">{{ r.get_reason_display }}</span></td>
+            <td>{{ r.details|truncatechars:80 }}</td>
+            <td>{{ r.reported_by.email }}</td>
+            <td>
+              <span class="badge {% if r.status == 'pending' %}bg-warning-subtle text-warning{% elif r.status == 'resolved' %}bg-success-subtle text-success{% else %}bg-secondary-subtle text-secondary{% endif %}">
+                {{ r.get_status_display }}
+              </span>
+            </td>
+            <td class="pe-4 text-end">
+              {% if r.status == 'pending' %}
+                <a href="{% url 'dashboard:admin_resolve_report' report_type='job' pk=r.pk action='resolve' %}" class="btn btn-sm btn-success me-1">Resolve</a>
+                <a href="{% url 'dashboard:admin_resolve_report' report_type='job' pk=r.pk action='dismiss' %}" class="btn btn-sm btn-outline-secondary">Dismiss</a>
+              {% else %}
+                <span class="text-muted small">Closed</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">{% trans "No pending job reports." %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Company Reports -->
+<h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-building-circle-exclamation text-danger me-2"></i> {% trans "Company / Employer Reports" %}</h5>
+<div class="card-career p-0 overflow-hidden shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0 small">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-4">Company</th>
+          <th>Reason</th>
+          <th>Details</th>
+          <th>Reported By</th>
+          <th>Status</th>
+          <th class="pe-4 text-end">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in company_reports %}
+          <tr>
+            <td class="ps-4"><strong>{{ r.company.name }}</strong></td>
+            <td><span class="badge bg-danger-subtle text-danger">{{ r.get_reason_display }}</span></td>
+            <td>{{ r.details|truncatechars:80 }}</td>
+            <td>{{ r.reported_by.email }}</td>
+            <td><span class="badge bg-warning-subtle text-warning">{{ r.get_status_display }}</span></td>
+            <td class="pe-4 text-end">
+              {% if r.status == 'pending' %}
+                <a href="{% url 'dashboard:admin_resolve_report' report_type='company' pk=r.pk action='resolve' %}" class="btn btn-sm btn-success me-1">Resolve</a>
+                <a href="{% url 'dashboard:admin_resolve_report' report_type='company' pk=r.pk action='dismiss' %}" class="btn btn-sm btn-outline-secondary">Dismiss</a>
+              {% else %}
+                <span class="text-muted small">Closed</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">{% trans "No pending company reports." %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

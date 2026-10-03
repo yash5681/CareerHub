@@ -1,0 +1,126 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans "My Resumes & Builder" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <h3 class="fw-bold mb-1 text-dark">{% trans "Resumes & CV Documents" %}</h3>
+    <p class="text-muted small mb-0">{% trans "Manage uploaded PDF/DOCX resumes or build an ATS-compliant resume." %}</p>
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-career-outline btn-sm" data-bs-toggle="modal" data-bs-target="#uploadResumeModal">
+      <i class="fa-solid fa-cloud-arrow-up me-1"></i> {% trans "Upload Resume File" %}
+    </button>
+    <a href="{% url 'resumes:builder' %}" class="btn btn-career btn-sm">
+      <i class="fa-solid fa-wand-magic-sparkles me-1"></i> {% trans "Create with Resume Builder" %}
+    </a>
+  </div>
+</div>
+
+<div class="row g-4">
+  {% for resume in resumes %}
+    <div class="col-lg-6">
+      <div class="card-career p-4 h-100 d-flex flex-column justify-content-between position-relative {% if resume.is_primary %}border-start border-4 border-success{% endif %}">
+        <div>
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="stat-icon-badge" style="width: 44px; height: 44px; font-size: 1.25rem;">
+                <i class="fa-solid fa-file-{% if resume.resume_type == 'uploaded' %}pdf text-danger{% else %}code text-primary{% endif %}"></i>
+              </div>
+              <div>
+                <h5 class="fw-bold mb-0 text-dark">{{ resume.title }}</h5>
+                <span class="badge bg-light text-dark border small mt-1">{{ resume.get_resume_type_display }}</span>
+                {% if resume.is_primary %}
+                  <span class="badge bg-success-subtle text-success ms-1">{% trans "Primary Default" %}</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <p class="small text-muted mb-3">
+            {% trans "Updated on" %} {{ resume.updated_at|date:"M d, Y" }}
+            {% if resume.template_name %}&bull; Template: <strong>{{ resume.get_template_name_display }}</strong>{% endif %}
+          </p>
+        </div>
+
+        <div class="pt-3 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div class="d-flex gap-2">
+            <a href="{% url 'resumes:preview' pk=resume.pk %}" class="btn btn-sm btn-outline-secondary">
+              <i class="fa-solid fa-eye me-1"></i> {% trans "Preview" %}
+            </a>
+            {% if resume.file %}
+              <a href="{{ resume.file.url }}" target="_blank" class="btn btn-sm btn-light border" download>
+                <i class="fa-solid fa-download me-1"></i> {% trans "Download" %}
+              </a>
+            {% endif %}
+          </div>
+          <div class="d-flex gap-2">
+            {% if not resume.is_primary %}
+              <a href="{% url 'resumes:set_primary' pk=resume.pk %}" class="btn btn-sm btn-outline-success">
+                {% trans "Set as Primary" %}
+              </a>
+            {% endif %}
+            <a href="{% url 'resumes:delete' pk=resume.pk %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this resume?');">
+              <i class="fa-regular fa-trash-can"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="col-12">
+      <div class="card-career p-5 text-center text-muted">
+        <i class="fa-regular fa-file-lines display-3 text-secondary opacity-25 mb-3"></i>
+        <h4 class="fw-bold text-dark mb-2">{% trans "No resumes available yet" %}</h4>
+        <p class="text-muted mb-4">{% trans "Upload your existing PDF/DOCX or use our interactive Resume Builder to generate an interview-ready resume." %}</p>
+        <div class="d-flex justify-content-center gap-3">
+          <button class="btn btn-career-outline" data-bs-toggle="modal" data-bs-target="#uploadResumeModal">
+            <i class="fa-solid fa-cloud-arrow-up me-1"></i> {% trans "Upload File" %}
+          </button>
+          <a href="{% url 'resumes:builder' %}" class="btn btn-career">
+            <i class="fa-solid fa-wand-magic-sparkles me-1"></i> {% trans "Build with Resume Builder" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<!-- Upload Resume Modal -->
+<div class="modal fade" id="uploadResumeModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content card-career p-4">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="uploadModalLabel">{% trans "Upload Resume Document" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{% url 'resumes:upload' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">{% trans "Resume Title / Label" %} *</label>
+            {{ upload_form.title }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{% trans "File (PDF or DOCX, Max 5MB)" %} *</label>
+            {{ upload_form.file }}
+            <small class="text-muted d-block mt-1">{% trans "Only .pdf, .doc, and .docx formats are accepted." %}</small>
+          </div>
+          <div class="mb-3 form-check">
+            {{ upload_form.is_primary }}
+            <label class="form-check-label text-dark small" for="{{ upload_form.is_primary.id_for_label }}">
+              {% trans "Set as my primary application resume" %}
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+          <button type="submit" class="btn btn-career">{% trans "Upload & Save" %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

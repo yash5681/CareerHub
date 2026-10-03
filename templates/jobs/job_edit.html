@@ -1,0 +1,81 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Edit Job" %} | {{ job.title }}{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    <div class="card-career p-4 p-md-5">
+      <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+          <span class="badge badge-ch-accent mb-2">{% trans "Edit Posting" %}</span>
+          <h3 class="fw-bold mb-1 text-dark">{{ job.title }}</h3>
+          <p class="text-muted small mb-0">{{ job.company.name }} &bull; {{ job.location_city }}</p>
+        </div>
+        <a href="{% url 'jobs:manage_jobs' %}" class="btn btn-outline-secondary btn-sm">
+          <i class="fa-solid fa-arrow-left me-1"></i> {% trans "Back to List" %}
+        </a>
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label class="form-label">{% trans "Job Title" %} *</label>
+            {{ form.title }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Category" %} *</label>
+            {{ form.category }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Job Type" %}</label>
+            {{ form.job_type }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Work Mode" %}</label>
+            {{ form.work_mode }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Status" %}</label>
+            {{ form.status }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "City" %}</label>
+            {{ form.location_city }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "State" %}</label>
+            {{ form.location_state }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Skills (Comma-separated)" %}</label>
+            {{ form.skills_csv }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Job Description" %} *</label>
+            {{ form.description }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Responsibilities" %}</label>
+            {{ form.responsibilities }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Requirements" %}</label>
+            {{ form.requirements }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Benefits" %}</label>
+            {{ form.benefits }}
+          </div>
+          <div class="col-12 d-flex justify-content-end gap-2 pt-3 border-top">
+            <a href="{% url 'jobs:manage_jobs' %}" class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-career">{% trans "Save Changes" %}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

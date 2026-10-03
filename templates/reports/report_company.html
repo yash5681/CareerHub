@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Report Employer" %} | CareerHub{% endblock %}
+
+{% block content %}
+<div class="py-5" style="background-color: var(--ch-bg);">
+  <div class="container py-3">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="card-career p-4 p-md-5">
+          <div class="text-center mb-4">
+            <i class="fa-solid fa-flag display-4 text-warning mb-2"></i>
+            <h4 class="fw-bold mb-1 text-dark">{% trans "Report Company" %}</h4>
+            <p class="text-muted small">{% trans "Report suspected impersonation, spam, or unethical practices." %}</p>
+          </div>
+
+          <div class="p-3 bg-light rounded-3 border mb-4">
+            <h6 class="fw-bold mb-0 text-dark">{{ company.name }}</h6>
+            <small class="text-muted">{{ company.city }} &bull; {{ company.industry }}</small>
+          </div>
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label">{% trans "Reason" %} *</label>
+              {{ form.reason }}
+            </div>
+            <div class="mb-4">
+              <label class="form-label">{% trans "Details" %} *</label>
+              {{ form.details }}
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <a href="{% url 'companies:detail' slug=company.slug %}" class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
+              <button type="submit" class="btn btn-danger">{% trans "Submit Report" %}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

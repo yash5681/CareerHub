@@ -1,0 +1,224 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans "My Profile" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="row g-4">
+  <!-- Profile Header Card -->
+  <div class="col-12">
+    <div class="card-career p-4">
+      <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-4">
+          {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="{{ user.get_full_name }}" width="84" height="84" class="rounded-circle object-fit-cover border border-3 border-light shadow-sm">
+          {% else %}
+            <div class="brand-emblem" style="width: 84px; height: 84px; font-size: 2.2rem; border-radius: 20px;">
+              {{ user.first_name|default:user.username|slice:":1"|upper }}
+            </div>
+          {% endif %}
+          <div>
+            <div class="d-flex align-items-center gap-2">
+              <h3 class="fw-bold mb-1 text-dark">{{ user.get_full_name }}</h3>
+              {% if user.is_verified %}
+                <i class="fa-solid fa-circle-check text-success" title="Verified Candidate"></i>
+              {% endif %}
+            </div>
+            <p class="text-muted mb-2 fs-6">{{ profile.headline|default:"Add your professional headline" }}</p>
+            <div class="d-flex flex-wrap gap-3 small text-muted">
+              <span><i class="fa-solid fa-location-dot me-1 text-secondary"></i> {{ profile.city|default:"Not specified" }}, {{ profile.state }}</span>
+              <span><i class="fa-solid fa-envelope me-1 text-secondary"></i> {{ user.email }}</span>
+              {% if user.phone %}<span><i class="fa-solid fa-phone me-1 text-secondary"></i> {{ user.phone }}</span>{% endif %}
+              {% if profile.total_experience_years %}
+                <span><i class="fa-solid fa-briefcase me-1 text-secondary"></i> {{ profile.total_experience_years }} yrs exp</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="d-flex flex-column align-items-md-end gap-2">
+          <a href="{% url 'accounts:edit_seeker_profile' %}" class="btn btn-career btn-sm">
+            <i class="fa-solid fa-pen-to-square me-1"></i> {% trans "Edit Profile Details" %}
+          </a>
+          <div class="text-md-end">
+            <small class="text-muted d-block mb-1">{% trans "Profile Strength" %}: <strong>{{ profile.completion_percentage }}%</strong></small>
+            <div class="progress" style="height: 8px; width: 140px;">
+              <div class="progress-bar bg-success" role="progressbar" style="width: {{ profile.completion_percentage }}%;" aria-valuenow="{{ profile.completion_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Left Column: Summary, Skills, Work Experience, Education -->
+  <div class="col-lg-8">
+    <!-- Career Summary -->
+    <div class="card-career p-4 mb-4">
+      <h5 class="fw-bold mb-3 text-dark"><i class="fa-regular fa-file-lines me-2 text-primary"></i> {% trans "Professional Summary" %}</h5>
+      <p class="text-muted mb-0 lh-base">
+        {{ profile.summary|default:"No professional summary provided. Add a brief summary to help recruiters discover your strengths."|linebreaks }}
+      </p>
+    </div>
+
+    <!-- Work Experience -->
+    <div class="card-career p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-briefcase me-2 text-primary"></i> {% trans "Work Experience" %}</h5>
+        <a href="{% url 'accounts:add_experience' %}" class="btn btn-outline-secondary btn-sm">
+          <i class="fa-solid fa-plus me-1"></i> {% trans "Add Experience" %}
+        </a>
+      </div>
+
+      {% for exp in experiences %}
+        <div class="border-bottom pb-3 mb-3 position-relative">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h6 class="fw-bold mb-1 text-dark">{{ exp.job_title }}</h6>
+              <p class="text-primary small fw-semibold mb-1">{{ exp.company_name }} {% if exp.location %}&bull; {{ exp.location }}{% endif %}</p>
+              <small class="text-muted d-block mb-2">
+                {{ exp.start_date|date:"M Y" }} &mdash; 
+                {% if exp.is_current %}<span class="badge bg-success-subtle text-success">Present</span>{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}
+              </small>
+              <p class="small text-muted mb-0">{{ exp.description|linebreaks }}</p>
+            </div>
+            <a href="{% url 'accounts:delete_experience' pk=exp.pk %}" class="text-danger small" onclick="return confirm('Remove this experience?');" title="Delete">
+              <i class="fa-regular fa-trash-can"></i>
+            </a>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-muted small mb-0">{% trans "No work experience added yet." %}</p>
+      {% endfor %}
+    </div>
+
+    <!-- Education -->
+    <div class="card-career p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-graduation-cap me-2 text-primary"></i> {% trans "Education & Academics" %}</h5>
+        <a href="{% url 'accounts:add_education' %}" class="btn btn-outline-secondary btn-sm">
+          <i class="fa-solid fa-plus me-1"></i> {% trans "Add Education" %}
+        </a>
+      </div>
+
+      {% for edu in educations %}
+        <div class="border-bottom pb-3 mb-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h6 class="fw-bold mb-1 text-dark">{{ edu.degree }}</h6>
+              <p class="text-muted small mb-1">{{ edu.institution }} {% if edu.field_of_study %}&bull; {{ edu.field_of_study }}{% endif %}</p>
+              <small class="text-muted d-block mb-1">
+                {{ edu.start_year }} &mdash; {{ edu.end_year|default:"Present" }}
+                {% if edu.grade %}&bull; Grade: <strong>{{ edu.grade }}</strong>{% endif %}
+              </small>
+            </div>
+            <a href="{% url 'accounts:delete_education' pk=edu.pk %}" class="text-danger small" onclick="return confirm('Remove this education record?');">
+              <i class="fa-regular fa-trash-can"></i>
+            </a>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-muted small mb-0">{% trans "No education records added yet." %}</p>
+      {% endfor %}
+    </div>
+
+    <!-- Projects -->
+    <div class="card-career p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-code me-2 text-primary"></i> {% trans "Key Projects" %}</h5>
+        <a href="{% url 'accounts:add_project' %}" class="btn btn-outline-secondary btn-sm">
+          <i class="fa-solid fa-plus me-1"></i> {% trans "Add Project" %}
+        </a>
+      </div>
+
+      {% for proj in projects %}
+        <div class="border-bottom pb-3 mb-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <h6 class="fw-bold mb-0 text-dark">{{ proj.title }}</h6>
+                {% if proj.project_url %}
+                  <a href="{{ proj.project_url }}" target="_blank" class="small text-primary"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                {% endif %}
+              </div>
+              {% if proj.technologies %}
+                <span class="badge badge-ch-primary mb-2">{{ proj.technologies }}</span>
+              {% endif %}
+              <p class="small text-muted mb-0">{{ proj.description|linebreaks }}</p>
+            </div>
+            <a href="{% url 'accounts:delete_project' pk=proj.pk %}" class="text-danger small" onclick="return confirm('Remove project?');">
+              <i class="fa-regular fa-trash-can"></i>
+            </a>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-muted small mb-0">{% trans "No projects added yet." %}</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Right Column: Skills, Expectations, Social Profiles -->
+  <div class="col-lg-4">
+    <!-- Skills -->
+    <div class="card-career p-4 mb-4">
+      <h6 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-tags me-2 text-primary"></i> {% trans "Skills & Competencies" %}</h6>
+      <div class="d-flex flex-wrap gap-2">
+        {% for skill in profile.get_skills_list %}
+          <span class="badge badge-ch-accent">{{ skill }}</span>
+        {% empty %}
+          <small class="text-muted">{% trans "No skills entered yet." %}</small>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Career Expectations -->
+    <div class="card-career p-4 mb-4">
+      <h6 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-sliders me-2 text-primary"></i> {% trans "Career Preferences" %}</h6>
+      <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+        <li class="d-flex justify-content-between">
+          <span class="text-muted">{% trans "Notice Period:" %}</span>
+          <strong>{{ profile.notice_period_days }} {% trans "Days" %}</strong>
+        </li>
+        <li class="d-flex justify-content-between">
+          <span class="text-muted">{% trans "Work Preference:" %}</span>
+          <strong>{{ profile.get_work_preference_display }}</strong>
+        </li>
+        <li class="d-flex justify-content-between">
+          <span class="text-muted">{% trans "Preferred Location:" %}</span>
+          <strong>{{ profile.preferred_location|default:"Flexible" }}</strong>
+        </li>
+        {% if profile.expected_salary %}
+          <li class="d-flex justify-content-between">
+            <span class="text-muted">{% trans "Expected CTC:" %}</span>
+            <strong class="text-success">₹{{ profile.expected_salary }} LPA</strong>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <!-- Social & Links -->
+    <div class="card-career p-4">
+      <h6 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-link me-2 text-primary"></i> {% trans "Social & Portfolio" %}</h6>
+      <div class="d-flex flex-column gap-2 small">
+        {% if profile.linkedin_url %}
+          <a href="{{ profile.linkedin_url }}" target="_blank" class="d-flex align-items-center gap-2 text-dark">
+            <i class="fa-brands fa-linkedin text-primary fs-5"></i> <span>LinkedIn Profile</span>
+          </a>
+        {% endif %}
+        {% if profile.github_url %}
+          <a href="{{ profile.github_url }}" target="_blank" class="d-flex align-items-center gap-2 text-dark">
+            <i class="fa-brands fa-github text-dark fs-5"></i> <span>GitHub Repositories</span>
+          </a>
+        {% endif %}
+        {% if profile.portfolio_url %}
+          <a href="{{ profile.portfolio_url }}" target="_blank" class="d-flex align-items-center gap-2 text-dark">
+            <i class="fa-solid fa-globe text-secondary fs-5"></i> <span>Personal Portfolio</span>
+          </a>
+        {% endif %}
+        {% if not profile.linkedin_url and not profile.github_url and not profile.portfolio_url %}
+          <span class="text-muted">{% trans "No portfolio links added." %}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

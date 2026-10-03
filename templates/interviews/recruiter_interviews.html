@@ -1,0 +1,89 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Scheduled Interviews" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+  <h3 class="fw-bold mb-1 text-dark">{% trans "Scheduled Candidate Interviews" %}</h3>
+  <p class="text-muted small mb-0">{% trans "View upcoming video calls and in-person interviews." %}</p>
+</div>
+
+<!-- Upcoming Interviews -->
+<h5 class="fw-bold text-dark mb-3"><i class="fa-regular fa-calendar-check me-2 text-primary"></i> {% trans "Upcoming Rounds" %}</h5>
+<div class="row g-3 mb-5">
+  {% for iv in upcoming_interviews %}
+    <div class="col-lg-6">
+      <div class="card-career p-4 h-100 border-start border-4 border-primary d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <span class="badge bg-primary-subtle text-primary mb-1">{{ iv.get_interview_type_display }}</span>
+              <h5 class="fw-bold mb-0 text-dark">{{ iv.interview_round }}</h5>
+            </div>
+            <span class="badge bg-success-subtle text-success">{{ iv.get_status_display }}</span>
+          </div>
+
+          <p class="small text-muted mb-2">
+            Candidate: <strong>{{ iv.candidate.get_full_name }}</strong> ({{ iv.candidate.email }})<br>
+            Role: <strong>{{ iv.job.title }}</strong>
+          </p>
+
+          <div class="p-3 rounded-3 bg-light border small text-dark mb-3">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <i class="fa-solid fa-calendar text-primary"></i>
+              <strong>{{ iv.interview_date|date:"l, M d, Y" }}</strong>
+              <span class="mx-1">&bull;</span>
+              <i class="fa-solid fa-clock text-primary"></i>
+              <strong>{{ iv.interview_time|time:"h:i A" }} IST</strong>
+            </div>
+            {% if iv.meeting_url %}
+              <div class="mt-2">
+                <a href="{{ iv.meeting_url }}" target="_blank" class="btn btn-sm btn-career py-1 px-3">
+                  <i class="fa-solid fa-video me-1"></i> {% trans "Join Meeting" %}
+                </a>
+              </div>
+            {% endif %}
+            {% if iv.location_address %}
+              <small class="text-muted d-block mt-1"><i class="fa-solid fa-location-dot me-1"></i>{{ iv.location_address }}</small>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="pt-2 border-top d-flex justify-content-between align-items-center">
+          <a href="{% url 'applications:recruiter_detail' pk=iv.application.pk %}" class="small fw-semibold text-primary">
+            {% trans "View Application" %} &rarr;
+          </a>
+          <a href="{% url 'messaging:start' recipient_id=iv.candidate.id %}?job_id={{ iv.job.id }}" class="btn btn-sm btn-outline-secondary">
+            <i class="fa-regular fa-comment-dots me-1"></i> {% trans "Message" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="col-12">
+      <div class="card-career p-4 text-center text-muted">
+        <p class="mb-0">{% trans "No upcoming interviews scheduled." %}</p>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<!-- Past Interviews -->
+{% if past_interviews %}
+<h5 class="fw-bold text-dark mb-3">{% trans "Past / Completed Rounds" %}</h5>
+<div class="row g-3">
+  {% for iv in past_interviews %}
+    <div class="col-lg-6">
+      <div class="card-career p-3 bg-light opacity-75">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <h6 class="fw-bold mb-0">{{ iv.interview_round }} &mdash; {{ iv.candidate.get_full_name }}</h6>
+          <span class="badge bg-secondary-subtle text-secondary">{{ iv.get_status_display }}</span>
+        </div>
+        <small class="text-muted">{{ iv.interview_date|date:"M d, Y" }} &bull; {{ iv.job.title }}</small>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

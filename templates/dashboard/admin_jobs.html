@@ -1,0 +1,58 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Manage All Jobs" %} | Admin Console{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+  <h3 class="fw-bold mb-1 text-dark">{% trans "Job Postings Oversight" %}</h3>
+  <p class="text-muted small mb-0">{% trans "Feature, review, or moderate job listings across all employers." %}</p>
+</div>
+
+<div class="card-career p-0 overflow-hidden shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-4">Title & Company</th>
+          <th>Status</th>
+          <th>Featured</th>
+          <th>Views / Apps</th>
+          <th>Posted By</th>
+          <th class="pe-4 text-end">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for j in jobs %}
+          <tr>
+            <td class="ps-4">
+              <a href="{% url 'jobs:detail' slug=j.slug %}" class="fw-bold text-dark text-decoration-none">
+                {{ j.title }}
+              </a>
+              <small class="text-muted d-block">{{ j.company.name }} &bull; {{ j.location_city }}</small>
+            </td>
+            <td>
+              <span class="badge bg-success-subtle text-success">{{ j.get_status_display }}</span>
+            </td>
+            <td>
+              {% if j.is_featured %}
+                <span class="badge badge-featured">Featured</span>
+              {% else %}
+                <span class="text-muted small">Standard</span>
+              {% endif %}
+            </td>
+            <td>{{ j.views_count }} / {{ j.applications_count }}</td>
+            <td class="small text-muted">{{ j.posted_by.email }}</td>
+            <td class="pe-4 text-end">
+              <a href="{% url 'dashboard:admin_toggle_featured' pk=j.pk %}" class="btn btn-sm btn-outline-warning">
+                {% if j.is_featured %}Unfeature{% else %}Feature{% endif %}
+              </a>
+              <a href="{% url 'jobs:detail' slug=j.slug %}" class="btn btn-sm btn-light">View</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

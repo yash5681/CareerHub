@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Terms of Service" %} | CareerHub{% endblock %}
+
+{% block content %}
+<div class="py-5 bg-white">
+  <div class="container py-3">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <h1 class="fw-bold mb-4">{% trans "Terms of Service" %}</h1>
+        <p class="text-muted small">{% trans "Effective date: October 2026" %}</p>
+
+        <h5 class="fw-bold mt-4">1. {% trans "Acceptance of Terms" %}</h5>
+        <p class="text-muted">
+          {% trans "By creating an account, browsing job listings, or publishing openings on CareerHub, you agree to comply with Indian employment regulations and platform fair-usage policies." %}
+        </p>
+
+        <h5 class="fw-bold mt-4">2. {% trans "Recruiter Obligations & Zero Scam Policy" %}</h5>
+        <p class="text-muted">
+          {% trans "Employers must never request security deposits, application fees, or confidential banking information from applicants. Posting fraudulent, misleading, or pyramid scheme opportunities results in immediate permanent ban." %}
+        </p>
+
+        <h5 class="fw-bold mt-4">3. {% trans "Candidate Conduct" %}</h5>
+        <p class="text-muted">
+          {% trans "Job seekers agree to provide truthful education and work history on their profiles and resumes. Misrepresentation of qualifications is grounds for profile suspension." %}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

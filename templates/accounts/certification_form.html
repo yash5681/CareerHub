@@ -1,0 +1,47 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Add Certification" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card-career p-4 p-md-5">
+      <h4 class="fw-bold mb-3 text-dark">{% trans "Add Certification" %}</h4>
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">{% trans "Certification Name" %} *</label>
+            {{ form.name }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Issuing Organization" %} *</label>
+            {{ form.issuing_organization }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Issue Date" %} *</label>
+            {{ form.issue_date }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Expiration Date" %}</label>
+            {{ form.expiration_date }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Credential ID" %}</label>
+            {{ form.credential_id }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Credential Verification URL" %}</label>
+            {{ form.credential_url }}
+          </div>
+          <div class="col-12 d-flex justify-content-end gap-2 pt-3 border-top">
+            <a href="{% url 'accounts:seeker_profile' %}" class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-career">{% trans "Save Certification" %}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

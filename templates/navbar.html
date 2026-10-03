@@ -1,0 +1,198 @@
+{% load i18n static %}
+
+<nav class="navbar navbar-expand-lg navbar-career">
+  <div class="container">
+    <!-- Brand Logo -->
+    <a class="navbar-brand navbar-brand-logo" href="{% url 'core:home' %}">
+      <img src="{% static 'images/logo.svg' %}" alt="CareerHub" height="42" class="d-inline-block">
+    </a>
+
+    <!-- Mobile Toggler -->
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCareerHub" aria-controls="navbarCareerHub" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fa-solid fa-bars-staggered fs-4 text-dark"></i>
+    </button>
+
+    <!-- Navigation Links -->
+    <div class="collapse navbar-collapse" id="navbarCareerHub">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'core:home' %}">
+            <i class="fa-solid fa-house-chimney me-1 text-muted"></i> {% trans "Home" %}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'jobs' in request.path and not 'dashboard' in request.path %}active{% endif %}" href="{% url 'jobs:list' %}">
+            <i class="fa-solid fa-magnifying-glass me-1 text-muted"></i> {% trans "Find Jobs" %}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'companies' in request.path %}active{% endif %}" href="{% url 'companies:list' %}">
+            <i class="fa-solid fa-building me-1 text-muted"></i> {% trans "Companies" %}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'categories' in request.path %}active{% endif %}" href="{% url 'jobs:categories' %}">
+            <i class="fa-solid fa-shapes me-1 text-muted"></i> {% trans "Categories" %}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'blog' in request.path %}active{% endif %}" href="{% url 'blog:list' %}">
+            <i class="fa-solid fa-newspaper me-1 text-muted"></i> {% trans "Career Blog" %}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'pricing' %}active{% endif %}" href="{% url 'payments:pricing' %}">
+            <i class="fa-solid fa-tags me-1 text-muted"></i> {% trans "Pricing" %}
+          </a>
+        </li>
+      </ul>
+
+      <!-- Language Switcher & User Actions -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <!-- Language Selector Dropdown -->
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1 py-1 px-2 rounded-3 border-light-subtle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-language text-secondary"></i>
+            <span class="small fw-semibold">
+              {% get_current_language as CURRENT_LANGUAGE %}
+              {% if CURRENT_LANGUAGE == 'hi' %}हिन्दी{% elif CURRENT_LANGUAGE == 'gu' %}ગુજરાતી{% else %}English{% endif %}
+            </span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <form action="{% url 'set_language' %}" method="post" id="langForm">
+              {% csrf_token %}
+              <input name="next" type="hidden" value="{{ request.get_full_path }}">
+              <li><button type="submit" name="language" value="en" class="dropdown-item {% if CURRENT_LANGUAGE == 'en' %}active{% endif %}">English (India)</button></li>
+              <li><button type="submit" name="language" value="hi" class="dropdown-item {% if CURRENT_LANGUAGE == 'hi' %}active{% endif %}">हिन्दी (Hindi)</button></li>
+              <li><button type="submit" name="language" value="gu" class="dropdown-item {% if CURRENT_LANGUAGE == 'gu' %}active{% endif %}">ગુજરાતી (Gujarati)</button></li>
+            </form>
+          </ul>
+        </div>
+
+        {% if user.is_authenticated %}
+          <!-- Unread Messages -->
+          <a href="{% url 'messaging:inbox' %}" class="btn btn-sm btn-light position-relative p-2 rounded-circle" title="{% trans 'Messages' %}">
+            <i class="fa-regular fa-comment-dots text-secondary fs-6"></i>
+            {% if unread_messages_count > 0 %}
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white">
+                {{ unread_messages_count }}
+              </span>
+            {% endif %}
+          </a>
+
+          <!-- Notifications Dropdown -->
+          <a href="{% url 'notifications:list' %}" class="btn btn-sm btn-light position-relative p-2 rounded-circle me-1" title="{% trans 'Notifications' %}">
+            <i class="fa-regular fa-bell text-secondary fs-6"></i>
+            {% if unread_notifications_count > 0 %}
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white notification-badge">
+                {{ unread_notifications_count }}
+              </span>
+            {% endif %}
+          </a>
+
+          <!-- User Menu Dropdown -->
+          <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle gap-2" data-bs-toggle="dropdown" aria-expanded="false">
+              {% if user.avatar %}
+                <img src="{{ user.avatar.url }}" alt="{{ user.get_full_name }}" width="38" height="38" class="rounded-circle object-fit-cover border border-secondary-subtle">
+              {% else %}
+                <div class="brand-emblem" style="width: 38px; height: 38px; font-size: 1rem;">
+                  {{ user.first_name|default:user.username|slice:":1"|upper }}
+                </div>
+              {% endif %}
+              <div class="d-none d-xl-block text-start lh-sm">
+                <span class="d-block fw-bold small text-truncate" style="max-width: 120px;">{{ user.get_full_name|default:user.username }}</span>
+                <span class="text-muted" style="font-size: 0.72rem;">{{ user.get_role_display }}</span>
+              </div>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 py-2" style="min-width: 220px;">
+              <li class="px-3 py-1">
+                <p class="mb-0 fw-bold text-dark">{{ user.get_full_name }}</p>
+                <small class="text-muted d-block text-truncate">{{ user.email }}</small>
+                <span class="badge bg-secondary-subtle text-secondary rounded-pill mt-1" style="font-size: 0.7rem;">{{ user.get_role_display }}</span>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+
+              {% if user.is_job_seeker %}
+                <li><a class="dropdown-item py-2" href="{% url 'dashboard:seeker' %}"><i class="fa-solid fa-chart-pie me-2 text-primary"></i> {% trans "Dashboard" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'accounts:seeker_profile' %}"><i class="fa-regular fa-id-badge me-2 text-primary"></i> {% trans "My Profile" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'resumes:my_resumes' %}"><i class="fa-regular fa-file-lines me-2 text-primary"></i> {% trans "My Resumes & Builder" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'applications:seeker_list' %}"><i class="fa-solid fa-paper-plane me-2 text-primary"></i> {% trans "My Applications" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'jobs:saved_jobs' %}"><i class="fa-regular fa-bookmark me-2 text-primary"></i> {% trans "Saved Jobs" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'interviews:seeker_list' %}"><i class="fa-regular fa-calendar-check me-2 text-primary"></i> {% trans "Interviews" %}</a></li>
+              {% elif user.is_recruiter %}
+                <li><a class="dropdown-item py-2" href="{% url 'dashboard:recruiter' %}"><i class="fa-solid fa-gauge-high me-2 text-primary"></i> {% trans "Recruiter Dashboard" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'jobs:create' %}"><i class="fa-solid fa-plus-circle me-2 text-success"></i> {% trans "Post a New Job" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'jobs:manage_jobs' %}"><i class="fa-solid fa-briefcase me-2 text-primary"></i> {% trans "Manage Posted Jobs" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'applications:recruiter_list' %}"><i class="fa-solid fa-users-viewfinder me-2 text-primary"></i> {% trans "Applicant Pipeline" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'companies:my_company' %}"><i class="fa-regular fa-building me-2 text-primary"></i> {% trans "Company Profile" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'interviews:recruiter_list' %}"><i class="fa-regular fa-calendar-check me-2 text-primary"></i> {% trans "Scheduled Interviews" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'payments:recruiter_plan' %}"><i class="fa-regular fa-credit-card me-2 text-primary"></i> {% trans "Subscription & Billing" %}</a></li>
+              {% elif user.is_admin_user %}
+                <li><a class="dropdown-item py-2" href="{% url 'dashboard:admin_overview' %}"><i class="fa-solid fa-shield-halved me-2 text-danger"></i> {% trans "Admin Console" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'dashboard:admin_users' %}"><i class="fa-solid fa-users me-2 text-primary"></i> {% trans "Manage Users" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'dashboard:admin_jobs' %}"><i class="fa-solid fa-briefcase me-2 text-primary"></i> {% trans "Manage Jobs" %}</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'dashboard:admin_reports' %}"><i class="fa-solid fa-triangle-exclamation me-2 text-warning"></i> {% trans "Reports & Moderation" %}</a></li>
+                <li><a class="dropdown-item py-2" href="/django-admin/" target="_blank"><i class="fa-solid fa-gears me-2 text-secondary"></i> {% trans "Django SuperAdmin" %}</a></li>
+              {% endif %}
+
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item py-2" href="{% url 'accounts:settings' %}"><i class="fa-solid fa-sliders me-2 text-secondary"></i> {% trans "Account Settings" %}</a></li>
+              <li>
+                <form action="{% url 'accounts:logout' %}" method="post" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="dropdown-item py-2 text-danger border-0 bg-transparent w-100 text-start">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> {% trans "Sign Out" %}
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </div>
+
+          {% if user.is_recruiter %}
+            <a href="{% url 'jobs:create' %}" class="btn btn-career btn-sm ms-2">
+              <i class="fa-solid fa-plus"></i> {% trans "Post Job" %}
+            </a>
+          {% endif %}
+
+        {% else %}
+          <!-- Guest Navigation Actions -->
+          <a href="{% url 'accounts:login' %}" class="btn btn-career-outline btn-sm">
+            <i class="fa-regular fa-user"></i> {% trans "Sign In" %}
+          </a>
+
+          <div class="dropdown">
+            <button class="btn btn-career btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {% trans "Register" %}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-2">
+              <li>
+                <a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{% url 'accounts:register_seeker' %}">
+                  <i class="fa-solid fa-user-graduate text-primary fs-5"></i>
+                  <div>
+                    <span class="d-block fw-bold text-dark">{% trans "I am a Job Seeker" %}</span>
+                    <small class="text-muted">{% trans "Find jobs, create profile, get hired" %}</small>
+                  </div>
+                </a>
+              </li>
+              <li><hr class="dropdown-divider my-1"></li>
+              <li>
+                <a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{% url 'accounts:register_recruiter' %}">
+                  <i class="fa-solid fa-building-user text-accent fs-5" style="color: var(--ch-accent);"></i>
+                  <div>
+                    <span class="d-block fw-bold text-dark">{% trans "I am an Employer" %}</span>
+                    <small class="text-muted">{% trans "Post jobs, hire Indian tech talent" %}</small>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <a href="{% url 'accounts:register_recruiter' %}" class="btn btn-outline-dark btn-sm d-none d-xl-inline-block">
+            {% trans "For Employers" %}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>

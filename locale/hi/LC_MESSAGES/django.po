@@ -1,0 +1,103 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CareerHub 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-03 14:00+0530\n"
+"PO-Revision-Date: 2026-10-03 14:00+0530\n"
+"Last-Translator: CareerHub Translation Team\n"
+"Language-Team: Hindi\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Home"
+msgstr "होम"
+
+msgid "Find Jobs"
+msgstr "नौकरियां खोजें"
+
+msgid "Companies"
+msgstr "कंपनियां"
+
+msgid "Categories"
+msgstr "श्रेणियां"
+
+msgid "Career Blog"
+msgstr "करियर ब्लॉग"
+
+msgid "Pricing"
+msgstr "मूल्य निर्धारण"
+
+msgid "Sign In"
+msgstr "साइन इन"
+
+msgid "Register"
+msgstr "रजिस्टर"
+
+msgid "For Employers"
+msgstr "नियोक्ताओं के लिए"
+
+msgid "Dashboard"
+msgstr "डैशबोर्ड"
+
+msgid "My Profile"
+msgstr "मेरी प्रोफाइल"
+
+msgid "My Applications"
+msgstr "मेरे आवेदन"
+
+msgid "Saved Jobs"
+msgstr "सहेजी गई नौकरियां"
+
+msgid "Interviews"
+msgstr "साक्षात्कार"
+
+msgid "Post Job"
+msgstr "नौकरी पोस्ट करें"
+
+msgid "Apply Now"
+msgstr "अभी आवेदन करें"
+
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Saved"
+msgstr "सहेजा गया"
+
+msgid "Candidate Pipeline"
+msgstr "उम्मीदवार पाइपलाइन"
+
+msgid "Notifications"
+msgstr "सूचनाएं"
+
+msgid "Messages"
+msgstr "संदेश"
+
+msgid "Settings"
+msgstr "सेटिंग्स"
+
+msgid "Sign Out"
+msgstr "साइन आउट"
+
+msgid "Find the Right Job."
+msgstr "सही नौकरी खोजें।"
+
+msgid "Build Your Future."
+msgstr "अपना भविष्य बनाएं।"
+
+msgid "Search"
+msgstr "खोजें"
+
+msgid "Explore by Category"
+msgstr "श्रेणी अनुसार खोजें"
+
+msgid "Featured Opportunities"
+msgstr "प्रमुख अवसर"
+
+msgid "Latest Job Openings"
+msgstr "नवीनतम नौकरियां"
+
+msgid "Top Employers Hiring Now"
+msgstr "शीर्ष भर्ती कंपनियां"

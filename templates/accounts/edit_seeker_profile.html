@@ -1,0 +1,121 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Edit Profile" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    <div class="card-career p-4 p-md-5">
+      <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+          <h4 class="fw-bold mb-1 text-dark">{% trans "Edit Profile Details" %}</h4>
+          <p class="text-muted small mb-0">{% trans "Keep your contact, expertise, and salary expectations up to date." %}</p>
+        </div>
+        <a href="{% url 'accounts:seeker_profile' %}" class="btn btn-outline-secondary btn-sm">
+          <i class="fa-solid fa-arrow-left me-1"></i> {% trans "View Profile" %}
+        </a>
+      </div>
+
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <h5 class="fw-bold text-dark mb-3">1. {% trans "Personal & Contact Information" %}</h5>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label">{% trans "First Name" %} *</label>
+            {{ form.first_name }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Last Name" %} *</label>
+            {{ form.last_name }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Mobile Number" %} *</label>
+            {{ form.phone }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Profile Photo" %}</label>
+            {{ form.avatar }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Current City" %}</label>
+            {{ form.city }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "State" %}</label>
+            {{ form.state }}
+          </div>
+        </div>
+
+        <h5 class="fw-bold text-dark mb-3">2. {% trans "Professional Headline & Summary" %}</h5>
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <label class="form-label">{% trans "Headline" %}</label>
+            {{ form.headline }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Career Summary" %}</label>
+            {{ form.summary }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Key Skills (Comma-separated)" %}</label>
+            {{ form.skills_csv }}
+          </div>
+        </div>
+
+        <h5 class="fw-bold text-dark mb-3">3. {% trans "Career Expectations & Work Preference" %}</h5>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Total Experience (Years)" %}</label>
+            {{ form.total_experience_years }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Current CTC (₹ LPA)" %}</label>
+            {{ form.current_salary }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Expected CTC (₹ LPA)" %}</label>
+            {{ form.expected_salary }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Notice Period (Days)" %}</label>
+            {{ form.notice_period_days }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Work Preference" %}</label>
+            {{ form.work_preference }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Preferred Location" %}</label>
+            {{ form.preferred_location }}
+          </div>
+        </div>
+
+        <h5 class="fw-bold text-dark mb-3">4. {% trans "Portfolio & Social Links" %}</h5>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label">{% trans "LinkedIn URL" %}</label>
+            {{ form.linkedin_url }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "GitHub URL" %}</label>
+            {{ form.github_url }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Portfolio Website" %}</label>
+            {{ form.portfolio_url }}
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+          <a href="{% url 'accounts:seeker_profile' %}" class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
+          <button type="submit" class="btn btn-career">
+            <i class="fa-solid fa-floppy-disk me-1"></i> {% trans "Save Profile" %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

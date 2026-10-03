@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}500 — Server Error | CareerHub{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="mb-4">
+        <i class="fa-solid fa-server display-2 text-warning"></i>
+      </div>
+      <h2 class="fw-bold mb-3">{% trans "500 — Internal Server Issue" %}</h2>
+      <p class="text-muted mb-4 lead fs-6">
+        {% trans "Our technical team has been notified and is looking into this. Please try refreshing or check back in a moment." %}
+      </p>
+      <div class="d-flex justify-content-center gap-3">
+        <a href="{% url 'core:home' %}" class="btn btn-career">
+          <i class="fa-solid fa-house me-1"></i> {% trans "Return to Home" %}
+        </a>
+        <a href="{% url 'core:contact' %}" class="btn btn-career-outline">
+          <i class="fa-solid fa-headset me-1"></i> {% trans "Report Issue" %}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Manage Users" %} | Admin Console{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <h3 class="fw-bold mb-1 text-dark">{% trans "User Directory & Access Control" %}</h3>
+    <p class="text-muted small mb-0">{% trans "Review, activate, and deactivate registered seeker and recruiter accounts." %}</p>
+  </div>
+</div>
+
+<!-- Search & Role Filter -->
+<div class="card-career p-3 mb-4">
+  <form method="get" class="row g-2">
+    <div class="col-md-6">
+      <input type="text" name="q" class="form-control form-control-sm" placeholder="Search by name or email..." value="{{ request.GET.q }}">
+    </div>
+    <div class="col-md-4">
+      <select name="role" class="form-select form-select-sm" onchange="this.form.submit()">
+        <option value="">{% trans "All Roles" %}</option>
+        <option value="job_seeker" {% if request.GET.role == 'job_seeker' %}selected{% endif %}>Job Seeker</option>
+        <option value="recruiter" {% if request.GET.role == 'recruiter' %}selected{% endif %}>Recruiter</option>
+        <option value="admin" {% if request.GET.role == 'admin' %}selected{% endif %}>Admin</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-career btn-sm w-100">Filter</button>
+    </div>
+  </form>
+</div>
+
+<div class="card-career p-0 overflow-hidden shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-4">User</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Phone</th>
+          <th>Joined</th>
+          <th class="pe-4 text-end">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+          <tr>
+            <td class="ps-4">
+              <strong>{{ u.get_full_name|default:u.username }}</strong>
+              <small class="text-muted d-block">{{ u.email }}</small>
+            </td>
+            <td>
+              <span class="badge bg-secondary-subtle text-secondary">{{ u.get_role_display }}</span>
+            </td>
+            <td>
+              {% if u.is_active %}
+                <span class="badge bg-success-subtle text-success">Active</span>
+              {% else %}
+                <span class="badge bg-danger-subtle text-danger">Suspended</span>
+              {% endif %}
+            </td>
+            <td class="small text-muted">{{ u.phone|default:"&mdash;" }}</td>
+            <td class="small text-muted">{{ u.date_joined|date:"M d, Y" }}</td>
+            <td class="pe-4 text-end">
+              {% if not u.is_superuser %}
+                <a href="{% url 'dashboard:admin_toggle_user' pk=u.pk %}" class="btn btn-sm {% if u.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+                  {% if u.is_active %}Deactivate{% else %}Activate{% endif %}
+                </a>
+              {% else %}
+                <span class="small text-muted">Superuser</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">No users found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

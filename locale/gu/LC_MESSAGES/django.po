@@ -1,0 +1,103 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CareerHub 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-03 14:00+0530\n"
+"PO-Revision-Date: 2026-10-03 14:00+0530\n"
+"Last-Translator: CareerHub Translation Team\n"
+"Language-Team: Gujarati\n"
+"Language: gu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Home"
+msgstr "હોમ"
+
+msgid "Find Jobs"
+msgstr "નોકરીઓ શોધો"
+
+msgid "Companies"
+msgstr "કંપનીઓ"
+
+msgid "Categories"
+msgstr "કેટેગરીઝ"
+
+msgid "Career Blog"
+msgstr "કારકિર્દી બ્લોગ"
+
+msgid "Pricing"
+msgstr "કિંમત યોજનાઓ"
+
+msgid "Sign In"
+msgstr "સાઇન ઇન"
+
+msgid "Register"
+msgstr "નોંધણી કરો"
+
+msgid "For Employers"
+msgstr "નિયોક્તાઓ માટે"
+
+msgid "Dashboard"
+msgstr "ડેશબોર્ડ"
+
+msgid "My Profile"
+msgstr "મારી પ્રોફાઇલ"
+
+msgid "My Applications"
+msgstr "મારી અરજીઓ"
+
+msgid "Saved Jobs"
+msgstr "સાચવેલી નોકરીઓ"
+
+msgid "Interviews"
+msgstr "ઇન્ટરવ્યુ"
+
+msgid "Post Job"
+msgstr "નોકરી પોસ્ટ કરો"
+
+msgid "Apply Now"
+msgstr "અત્યારે અરજી કરો"
+
+msgid "Save"
+msgstr "સાચવો"
+
+msgid "Saved"
+msgstr "સાચવેલ"
+
+msgid "Candidate Pipeline"
+msgstr "ઉમેદવાર પાઇપલાઇન"
+
+msgid "Notifications"
+msgstr "સૂચનાઓ"
+
+msgid "Messages"
+msgstr "સંદેશાઓ"
+
+msgid "Settings"
+msgstr "સેટિંગ્સ"
+
+msgid "Sign Out"
+msgstr "સાઇન આઉટ"
+
+msgid "Find the Right Job."
+msgstr "યોગ્ય નોકરી શોધો."
+
+msgid "Build Your Future."
+msgstr "તમારું ભવિષ્ય બનાવો."
+
+msgid "Search"
+msgstr "શોધો"
+
+msgid "Explore by Category"
+msgstr "કેટેગરી અનુસાર શોધો"
+
+msgid "Featured Opportunities"
+msgstr "વિશેષ તકો"
+
+msgid "Latest Job Openings"
+msgstr "નવીનતમ નોકરીઓ"
+
+msgid "Top Employers Hiring Now"
+msgstr "ટોચની ભરતી કરતી કંપનીઓ"

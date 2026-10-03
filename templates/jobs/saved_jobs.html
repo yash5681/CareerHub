@@ -1,0 +1,66 @@
+{% extends 'dashboard_base.html' %}
+{% load i18n static humanize %}
+
+{% block title %}{% trans "Saved Jobs" %} | CareerHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+  <h3 class="fw-bold mb-1 text-dark">{% trans "Bookmarked Opportunities" %}</h3>
+  <p class="text-muted small mb-0">{% trans "Jobs you have saved to review and apply later." %}</p>
+</div>
+
+<div class="row g-4">
+  {% for item in saved_items %}
+    <div class="col-lg-6">
+      <div class="card-career p-4 h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-start justify-content-between mb-3">
+            <div class="company-logo-box">
+              {% if item.job.company.logo %}
+                <img src="{{ item.job.company.logo.url }}" alt="{{ item.job.company.name }}">
+              {% else %}
+                <i class="fa-solid fa-building"></i>
+              {% endif %}
+            </div>
+            <button class="btn btn-sm btn-light rounded-circle p-2 btn-save-job active text-danger"
+                    data-job-id="{{ item.job.id }}" title="{% trans 'Remove Bookmark' %}">
+              <i class="fa-solid fa-bookmark"></i>
+            </button>
+          </div>
+
+          <h5 class="fw-bold mb-1">
+            <a href="{% url 'jobs:detail' slug=item.job.slug %}" class="text-dark text-decoration-none">
+              {{ item.job.title }}
+            </a>
+          </h5>
+          <p class="text-muted small mb-2">{{ item.job.company.name }} &bull; {{ item.job.location_city }}</p>
+
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <span class="badge badge-ch-primary">{{ item.job.salary_display }}</span>
+            <span class="badge badge-ch-accent">{{ item.job.experience_display }}</span>
+            <span class="badge bg-light text-dark border">{{ item.job.get_job_type_display }}</span>
+          </div>
+        </div>
+
+        <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+          <small class="text-muted">{% trans "Saved on" %} {{ item.created_at|date:"M d, Y" }}</small>
+          <a href="{% url 'jobs:detail' slug=item.job.slug %}" class="btn btn-career btn-sm">
+            {% trans "Apply Now" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="col-12">
+      <div class="card-career p-5 text-center text-muted">
+        <i class="fa-regular fa-bookmark display-3 text-secondary opacity-25 mb-3"></i>
+        <h4 class="fw-bold text-dark mb-2">{% trans "No saved jobs yet" %}</h4>
+        <p class="text-muted mb-4">{% trans "Click the bookmark icon on any job card to save it for easy access later." %}</p>
+        <a href="{% url 'jobs:list' %}" class="btn btn-career">
+          <i class="fa-solid fa-magnifying-glass me-1"></i> {% trans "Explore Jobs" %}
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

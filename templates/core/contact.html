@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Contact Support & Sales" %} | CareerHub{% endblock %}
+
+{% block content %}
+<div class="py-5" style="background-color: var(--ch-bg);">
+  <div class="container py-3">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="row g-5">
+          <!-- Col 1: Contact Details -->
+          <div class="col-md-5">
+            <span class="badge badge-ch-accent mb-2">{% trans "Get in Touch" %}</span>
+            <h2 class="fw-bold mb-3">{% trans "We’d Love to Hear From You" %}</h2>
+            <p class="text-muted mb-4">
+              {% trans "Whether you have questions about employer subscriptions, candidate profiles, or general feedback, our support specialists are here to assist." %}
+            </p>
+
+            <div class="d-flex flex-column gap-3 mb-4">
+              <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon-badge"><i class="fa-solid fa-envelope"></i></div>
+                <div>
+                  <small class="text-muted d-block">{% trans "Email Inquiries" %}</small>
+                  <strong>support@careerhub.in</strong>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon-badge"><i class="fa-solid fa-phone"></i></div>
+                <div>
+                  <small class="text-muted d-block">{% trans "Toll-Free Phone" %}</small>
+                  <strong>+91 98765 43210</strong>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon-badge"><i class="fa-solid fa-location-dot"></i></div>
+                <div>
+                  <small class="text-muted d-block">{% trans "Corporate Headquarters" %}</small>
+                  <strong>Sector 24, Cyber City, Gurugram, India</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2: Message Form -->
+          <div class="col-md-7">
+            <div class="card-career p-4">
+              <h4 class="fw-bold mb-3">{% trans "Send a Message" %}</h4>
+              <form method="post" action="{% url 'core:contact' %}">
+                {% csrf_token %}
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">{% trans "Your Name" %} *</label>
+                    {{ form.name }}
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">{% trans "Email Address" %} *</label>
+                    {{ form.email }}
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">{% trans "Phone Number" %}</label>
+                    {{ form.phone }}
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">{% trans "Subject" %} *</label>
+                    {{ form.subject }}
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">{% trans "Message Content" %} *</label>
+                    {{ form.message }}
+                  </div>
+                  <div class="col-12">
+                    <button type="submit" class="btn btn-career w-100 py-2">
+                      <i class="fa-solid fa-paper-plane me-1"></i> {% trans "Submit Inquiry" %}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
