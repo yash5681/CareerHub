@@ -12,10 +12,6 @@ services:
         value: 3.11.0
       - key: SECRET_KEY
         generateValue: true
-      - key: DATABASE_URL
-        fromDatabase:
-          name: careerhub-db
-          property: connectionString
       - key: ALLOWED_HOSTS
         value: ".onrender.com,localhost,127.0.0.1"
       - key: CSRF_TRUSTED_ORIGINS
@@ -24,9 +20,3 @@ services:
         value: rzp_test_placeholder_key
       - key: RAZORPAY_KEY_SECRET
         value: rzp_test_placeholder_secret
-
-databases:
-  - name: careerhub-db
-    plan: free
-    databaseName: careerhub
-    user: careerhub_admin
