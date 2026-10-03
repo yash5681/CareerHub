@@ -3,6 +3,7 @@ from .base import *
 
 DEBUG = True
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://*.loca.lt', 'http://*.loca.lt', 'http://127.0.0.1:8000', 'http://localhost:8000']
 
 # Check if PostgreSQL service is reachable
 def is_db_reachable(host, port):

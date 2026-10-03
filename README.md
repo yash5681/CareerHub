@@ -136,9 +136,9 @@ Use these pre-configured accounts created by `python manage.py seed_data`:
 
 | Role | Email | Password | Access |
 | :--- | :--- | :--- | :--- |
-| **Administrator** | `admin@careerhub.in` | `Admin@CareerHub2026` | Custom Admin Console (`/dashboard/admin/`) & Django Admin |
+| **Administrator (Author)** | `pyash7571@gmail.com` | `Admin@CareerHub2026` | Custom Admin Console (`/dashboard/admin/`) & Django Admin |
 | **Recruiter (Razorpay)** | `priya.nair@razorpay.com` | `Password@123` | Employer Dashboard, Post Jobs, Candidate Pipeline |
-| **Job Seeker** | `rahul.sharma@example.com` | `Password@123` | Seeker Dashboard, Resumes, Applications, Saved Jobs |
+| **Job Seeker (Yash)** | `pyash7571@gmail.com` / `rahul.sharma@example.com` | `Admin@CareerHub2026` / `Password@123` | Seeker Dashboard, Resumes, Applications, Saved Jobs |
 
 ---
 
@@ -206,5 +206,16 @@ careerhub/
 
 ---
 
+## 👤 Author & Lead Architect
+- **Name**: **Yash Prajapati**
+- **Role**: Full-Stack Python & Django Developer | BCA Student
+- **Location**: Himatnagar, Gujarat, India
+- **Email**: [pyash7571@gmail.com](mailto:pyash7571@gmail.com)
+- **Phone / WhatsApp**: [+91 9023433407](tel:+919023433407)
+- **GitHub**: [github.com/pyash7571](https://github.com/pyash7571)
+- **LinkedIn**: [linkedin.com/in/yash-prajapati](https://linkedin.com/in/yash-prajapati)
+
+---
+
 ## 📄 License
-This project is licensed under the MIT License — feel free to use it for portfolio showcases, job interviews, or academic demonstration.
+This project is licensed under the MIT License — created by Yash Prajapati. Feel free to use it for portfolio showcases, job interviews, or academic demonstration.

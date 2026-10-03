@@ -10,6 +10,15 @@ def global_context(request):
         'LANGUAGES': settings.LANGUAGES,
         'unread_notifications_count': 0,
         'unread_messages_count': 0,
+        'developer': {
+            'name': 'Yash Prajapati',
+            'role': 'Full-Stack Python & Django Developer | BCA Student',
+            'email': 'pyash7571@gmail.com',
+            'phone': '+91 9023433407',
+            'location': 'Himatnagar, Gujarat, India',
+            'github': 'https://github.com/pyash7571',
+            'linkedin': 'https://linkedin.com/in/yash-prajapati',
+        },
     }
 
     try:

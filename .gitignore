@@ -32,7 +32,5 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 
-# Pytest / Coverage
-.pytest_cache/
-.coverage
-htmlcov/
+# Node
+node_modules/

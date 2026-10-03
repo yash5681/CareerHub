@@ -31,23 +31,23 @@ class Command(BaseCommand):
             site_name='CareerHub',
             defaults={
                 'tagline': 'Connecting India’s Tech Talent with Premier Opportunities',
-                'contact_email': 'contact@careerhub.in',
-                'contact_phone': '+91 98765 43210',
-                'address': 'Building 10, DLF Cyber City, Gurugram, Haryana 122002, India',
+                'contact_email': 'pyash7571@gmail.com',
+                'contact_phone': '+91 9023433407',
+                'address': 'Himatnagar, Gujarat, India',
             }
         )
 
         # 2. Admin Superuser
-        admin_email = 'admin@careerhub.in'
+        admin_email = 'pyash7571@gmail.com'
         admin_user = User.objects.filter(email=admin_email).first()
         if not admin_user:
             admin_user = User.objects.create_superuser(
                 email=admin_email,
-                username='admin',
+                username='yash',
                 password='Admin@CareerHub2026',
-                first_name='CareerHub',
-                last_name='Admin',
-                phone='+919876543210'
+                first_name='Yash',
+                last_name='Prajapati',
+                phone='+919023433407'
             )
             self.stdout.write(self.style.SUCCESS(f"Superuser created: {admin_email} / Admin@CareerHub2026"))
         else:
