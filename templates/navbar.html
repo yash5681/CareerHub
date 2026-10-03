@@ -14,55 +14,63 @@
 
     <!-- Navigation Links -->
     <div class="collapse navbar-collapse" id="navbarCareerHub">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 align-items-lg-center">
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'core:home' %}">
-            <i class="fa-solid fa-house-chimney me-1 text-muted"></i> {% trans "Home" %}
+            {% trans "Home" %}
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if 'jobs' in request.path and not 'dashboard' in request.path %}active{% endif %}" href="{% url 'jobs:list' %}">
-            <i class="fa-solid fa-magnifying-glass me-1 text-muted"></i> {% trans "Find Jobs" %}
+            {% trans "Find Jobs" %}
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if 'companies' in request.path %}active{% endif %}" href="{% url 'companies:list' %}">
-            <i class="fa-solid fa-building me-1 text-muted"></i> {% trans "Companies" %}
+            {% trans "Companies" %}
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if 'categories' in request.path %}active{% endif %}" href="{% url 'jobs:categories' %}">
-            <i class="fa-solid fa-shapes me-1 text-muted"></i> {% trans "Categories" %}
+            {% trans "Categories" %}
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if 'blog' in request.path %}active{% endif %}" href="{% url 'blog:list' %}">
-            <i class="fa-solid fa-newspaper me-1 text-muted"></i> {% trans "Career Blog" %}
+            {% trans "Career Blog" %}
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'pricing' %}active{% endif %}" href="{% url 'payments:pricing' %}">
-            <i class="fa-solid fa-tags me-1 text-muted"></i> {% trans "Pricing" %}
+            {% trans "Pricing" %}
           </a>
         </li>
       </ul>
 
       <!-- Language Switcher & User Actions -->
       <div class="d-flex align-items-center gap-2 flex-wrap">
+        <!-- For Employers Link (for Guests) -->
+        {% if not user.is_authenticated %}
+          <a href="{% url 'accounts:register_recruiter' %}" class="btn btn-sm btn-link text-decoration-none text-muted fw-semibold d-none d-xl-inline-block hover-primary px-2">
+            <i class="fa-solid fa-briefcase me-1 text-accent"></i> {% trans "For Employers" %}
+          </a>
+          <span class="vr d-none d-xl-inline-block mx-1 text-secondary opacity-25" style="height: 22px;"></span>
+        {% endif %}
+
         <!-- Language Selector Dropdown -->
-        <div class="dropdown">
-          <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1 py-1 px-2 rounded-3 border-light-subtle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fa-solid fa-language text-secondary"></i>
-            <span class="small fw-semibold">
+        <div class="dropdown me-1">
+          <button class="btn btn-sm btn-light border dropdown-toggle d-flex align-items-center gap-1 py-1.5 px-2.5 rounded-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-globe text-secondary" style="font-size: 0.85rem;"></i>
+            <span class="small fw-semibold text-dark">
               {% get_current_language as CURRENT_LANGUAGE %}
               {% if CURRENT_LANGUAGE == 'hi' %}हिन्दी{% elif CURRENT_LANGUAGE == 'gu' %}ગુજરાતી{% else %}English{% endif %}
             </span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-1">
             <form action="{% url 'set_language' %}" method="post" id="langForm">
               {% csrf_token %}
               <input name="next" type="hidden" value="{{ request.get_full_path }}">
-              <li><button type="submit" name="language" value="en" class="dropdown-item {% if CURRENT_LANGUAGE == 'en' %}active{% endif %}">English (India)</button></li>
+              <li><button type="submit" name="language" value="en" class="dropdown-item {% if CURRENT_LANGUAGE == 'en' %}active{% endif %}">English</button></li>
               <li><button type="submit" name="language" value="hi" class="dropdown-item {% if CURRENT_LANGUAGE == 'hi' %}active{% endif %}">हिन्दी (Hindi)</button></li>
               <li><button type="submit" name="language" value="gu" class="dropdown-item {% if CURRENT_LANGUAGE == 'gu' %}active{% endif %}">ગુજરાતી (Gujarati)</button></li>
             </form>
@@ -187,10 +195,6 @@
               </li>
             </ul>
           </div>
-
-          <a href="{% url 'accounts:register_recruiter' %}" class="btn btn-outline-dark btn-sm d-none d-xl-inline-block">
-            {% trans "For Employers" %}
-          </a>
         {% endif %}
       </div>
     </div>
