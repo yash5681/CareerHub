@@ -212,7 +212,7 @@ careerhub/
 - **Location**: Himatnagar, Gujarat, India
 - **Email**: [pyash7571@gmail.com](mailto:pyash7571@gmail.com)
 - **Phone / WhatsApp**: [+91 9023433407](tel:+919023433407)
-- **GitHub**: [github.com/pyash7571](https://github.com/pyash7571)
+- **GitHub Repository**: [github.com/yash5681/CareerHub](https://github.com/yash5681/CareerHub)
 - **LinkedIn**: [linkedin.com/in/yash-prajapati](https://linkedin.com/in/yash-prajapati)
 
 ---

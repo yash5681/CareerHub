@@ -16,7 +16,7 @@ def global_context(request):
             'email': 'pyash7571@gmail.com',
             'phone': '+91 9023433407',
             'location': 'Himatnagar, Gujarat, India',
-            'github': 'https://github.com/pyash7571',
+            'github': 'https://github.com/yash5681',
             'linkedin': 'https://linkedin.com/in/yash-prajapati',
         },
     }
